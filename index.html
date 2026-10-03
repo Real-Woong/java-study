@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자바 하루 속독 플랜</title>
-<meta name="description" content="자바 기본 문법, 자주 쓰는 클래스(Scanner 등), 하루 학습 플랜, Spring 첫 실습까지 한 페이지에 정리">
+<title>자바 문법 노트</title>
+<meta name="description" content="서버 공부하면서 수시로 펼쳐 보는 자바 문법 정리: 기본 문법, 표준 클래스, 객체지향, 서버 코드 필수 문법, Spring에서 보이는 자바, 자주 하는 실수">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -49,6 +49,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 16px); }
 body {
   background: var(--bg); color: var(--fg);
@@ -63,9 +64,9 @@ h4 { font-size: 0.98rem; font-weight: 700; }
 p { margin: 0; }
 a { color: var(--accent); }
 code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); border: 1px solid var(--line); padding: 0 5px; border-radius: 4px; }
+kbd { font-family: var(--font-mono); font-size: 0.78em; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--surface); }
 .eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .lead { color: var(--muted); max-width: 64ch; }
-.muted { color: var(--muted); }
 
 /* ---------- navbar ---------- */
 .nav {
@@ -74,33 +75,40 @@ code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-
   backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--line);
 }
-.nav-inner { max-width: 1240px; height: 100%; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 12px; }
+.nav-inner { max-width: 1280px; height: 100%; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 10px; }
 .brand { font-weight: 700; color: var(--fg); text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
 .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--surface); display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.8rem; }
 .nav-links { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; margin-left: 8px; }
 .nav-links::-webkit-scrollbar { display: none; }
-.nav-links a { flex: none; color: var(--muted); text-decoration: none; font-size: 0.92rem; font-weight: 500; padding: 6px 12px; border-radius: 8px; white-space: nowrap; }
+.nav-links a { flex: none; color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 6px 11px; border-radius: 8px; white-space: nowrap; }
 .nav-links a:hover { color: var(--fg); background: var(--bg); }
 .nav-links a.active { color: var(--accent); background: var(--accent-soft); }
+.search { flex: none; position: relative; }
+.search input { font: inherit; font-size: 0.88rem; width: 190px; height: 34px; padding: 0 30px 0 12px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+.search input::placeholder { color: var(--muted); }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; background: var(--surface); }
+.search kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.search input:focus + kbd, .search input:not(:placeholder-shown) + kbd { display: none; }
+.drawer .search input { width: 100%; }
 .icon-btn { flex: none; font: inherit; font-size: 0.88rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 8px; height: 34px; padding: 0 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .icon-btn:hover { color: var(--fg); }
-.icon-btn:focus-visible, .nav-links a:focus-visible, .toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.icon-btn:focus-visible, .nav-links a:focus-visible, .toc a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .icon-btn svg { width: 16px; height: 16px; }
 #tocBtn { display: none; }
 .nav-progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--accent); }
 
 /* ---------- layout ---------- */
-.layout { max-width: 1240px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 48px; }
+.layout { max-width: 1280px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 48px; }
 .sidebar { position: sticky; top: calc(var(--nav-h) + 24px); align-self: start; max-height: calc(100vh - var(--nav-h) - 48px); overflow-y: auto; padding: 4px 4px 24px 0; }
-main { min-width: 0; max-width: 860px; padding: 40px 0 120px; display: grid; gap: 72px; }
+main { min-width: 0; max-width: 880px; padding: 40px 0 120px; display: grid; gap: 72px; }
 section { display: grid; gap: 22px; }
 .section-head { display: grid; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
 
 /* toc */
-.toc { display: grid; gap: 2px; font-size: 0.88rem; }
+.toc { display: grid; gap: 1px; font-size: 0.87rem; }
 .toc .toc-title { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.toc a { display: block; color: var(--muted); text-decoration: none; padding: 4px 10px; border-left: 2px solid transparent; line-height: 1.45; border-radius: 0 6px 6px 0; }
-.toc a.lvl-2 { font-weight: 700; color: var(--fg); margin-top: 12px; }
+.toc a { display: block; color: var(--muted); text-decoration: none; padding: 3px 10px; border-left: 2px solid transparent; line-height: 1.45; border-radius: 0 6px 6px 0; }
+.toc a.lvl-2 { font-weight: 700; color: var(--fg); margin-top: 14px; }
 .toc a.lvl-2:first-of-type { margin-top: 0; }
 .toc a.lvl-3 { padding-left: 20px; }
 .toc a:hover { color: var(--fg); background: var(--surface); }
@@ -108,34 +116,29 @@ section { display: grid; gap: 22px; }
 
 /* mobile drawer */
 .drawer-backdrop { position: fixed; inset: 0; background: rgb(0 0 0 / .35); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 86vw); z-index: 31; background: var(--surface); border-left: 1px solid var(--line); padding: 20px 16px 40px; overflow-y: auto; transform: translateX(100%); transition: transform .22s ease; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 86vw); z-index: 31; background: var(--surface); border-left: 1px solid var(--line); padding: 20px 16px 40px; overflow-y: auto; transform: translateX(100%); transition: transform .22s ease; display: grid; gap: 16px; align-content: start; }
 body.drawer-open .drawer { transform: none; }
 body.drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
-.drawer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.drawer-head { display: flex; justify-content: space-between; align-items: center; }
 
 /* ---------- hero ---------- */
 .hero { display: grid; gap: 16px; }
-.progress { display: grid; gap: 8px; max-width: 520px; }
-.bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
-.bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
-.progress-label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 8px; }
+.quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
 .quick a { display: grid; gap: 2px; text-decoration: none; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
 .quick a:hover { border-color: var(--accent); }
 .quick a b { font-size: 0.98rem; }
 .quick a span { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 0.85rem; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.no-result { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 24px; color: var(--muted); text-align: center; }
 
 /* ---------- cards ---------- */
-.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
-.rule p { color: var(--muted); font-size: 0.93rem; }
-
 .topic { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 26px; display: grid; gap: 16px; min-width: 0; }
 .topic > h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .topic > h3 .num { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); }
 .topic > h3 .api { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 400; color: var(--muted); }
-.topic p { max-width: 70ch; }
-.topic ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.topic p { max-width: 72ch; }
 
 .tip, .warn, .spring-note { font-size: 0.93rem; border-radius: 10px; padding: 12px 16px; }
 .tip { background: var(--accent-soft); }
@@ -144,7 +147,6 @@ body.drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
 .warn b { color: var(--warn); }
 .spring-note { background: var(--spring-soft); }
 .spring-note b { color: var(--spring); }
-.tag { display: inline-block; font-size: 0.75rem; font-weight: 500; color: var(--spring); background: var(--spring-soft); padding: 2px 9px; border-radius: 99px; }
 
 /* ---------- code ---------- */
 .code { position: relative; min-width: 0; }
@@ -161,9 +163,6 @@ pre code { background: none; border: 0; padding: 0; font-size: inherit; }
 .hljs-meta { color: var(--spring); }
 .hljs-title.function_ { color: var(--fg); font-weight: 600; }
 
-.io { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-.io .label { font-size: 0.78rem; color: var(--muted); font-family: var(--font-mono); margin-bottom: 4px; }
-
 /* ---------- tables ---------- */
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
@@ -173,42 +172,28 @@ tr:last-child td { border-bottom: 0; }
 td:first-child { font-weight: 500; white-space: nowrap; }
 td code { white-space: nowrap; }
 
-/* ---------- timeline ---------- */
-.timeline { display: grid; }
-.slot { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 20px; }
-.time { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); padding-top: 22px; text-align: right; font-variant-numeric: tabular-nums; line-height: 1.4; }
-.time small { display: block; font-size: 0.72rem; opacity: .8; }
-.block { border-left: 2px solid var(--line); padding: 20px 0 32px 24px; display: grid; gap: 12px; position: relative; min-width: 0; }
-.block::before { content: ""; position: absolute; left: -7px; top: 27px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
-.block.break::before { border-color: var(--line); }
-.block.break { padding-bottom: 16px; }
-.block.break h3 { color: var(--muted); font-weight: 500; font-size: 0.95rem; }
-.goal { color: var(--muted); font-size: 0.95rem; }
+/* ---------- details (접기) ---------- */
+details { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+details + details { margin-top: -8px; }
+summary { cursor: pointer; padding: 12px 16px; font-weight: 500; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; font-family: var(--font-mono); color: var(--accent); width: 12px; flex: none; }
+details[open] > summary::before { content: "−"; }
+summary .file-hint { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; }
+summary em { font-style: normal; color: var(--muted); font-size: 0.85rem; font-weight: 400; }
+.details-body { padding: 0 16px 16px; display: grid; gap: 10px; }
+.quiz details { background: var(--bg); }
 
-.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.checks label { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; cursor: pointer; padding: 3px 0; }
-.checks input { margin: 6px 0 0; width: 16px; height: 16px; accent-color: var(--accent); }
-.checks input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.checks input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
-
-/* ---------- spring lab ---------- */
+/* ---------- flow ---------- */
 .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
-.flow .node { flex: 1 1 130px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.flow .node { flex: 1 1 130px; min-width: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
 .flow .node b { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); }
 .flow .node span { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
 .flow .arrow { align-self: center; color: var(--muted); font-family: var(--font-mono); }
-.file { display: grid; gap: 6px; min-width: 0; }
-.file-name { font-family: var(--font-mono); font-size: 0.84rem; font-weight: 600; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-.file-name em { font-style: normal; font-family: var(--font-body); font-weight: 400; color: var(--muted); font-size: 0.85rem; }
-.lab-step { display: grid; gap: 14px; }
 
 .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .list-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
 .list-card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.93rem; }
-.list-card li::marker { color: var(--muted); }
-
-.reset { justify-self: start; font: inherit; font-size: 0.85rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
-.reset:hover { color: var(--fg); }
 
 .to-top { position: fixed; right: 18px; bottom: 18px; z-index: 15; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity .2s; box-shadow: 0 4px 14px rgb(0 0 0 / .08); }
 .to-top.show { opacity: 1; pointer-events: auto; }
@@ -217,11 +202,14 @@ td code { white-space: nowrap; }
 footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 20px; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1080px) {
+@media (max-width: 1100px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .sidebar { display: none; }
   main { margin: 0 auto; }
   #tocBtn { display: inline-flex; }
+}
+@media (max-width: 760px) {
+  .nav .search { display: none; }
 }
 @media (max-width: 640px) {
   body { font-size: 15.5px; }
@@ -232,16 +220,11 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
   .nav-links { margin-left: 0; }
   .topic { padding: 18px 16px; border-radius: 12px; }
   pre { font-size: 0.8rem; padding: 14px; }
-  .slot { grid-template-columns: 1fr; gap: 0; }
-  .time { text-align: left; padding-top: 18px; padding-left: 26px; }
-  .time small { display: inline; margin-left: 6px; }
-  .block { padding-top: 6px; }
-  .block::before { top: -14px; }
   #themeBtn .lbl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .bar > span, .drawer, .drawer-backdrop, .to-top { transition: none; }
+  .drawer, .drawer-backdrop, .to-top { transition: none; }
 }
 </style>
 <script>try{var t=localStorage.getItem("java-one-day-plan:theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
@@ -250,18 +233,20 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 
 <nav class="nav" aria-label="주요 메뉴">
   <div class="nav-inner">
-    <a class="brand" href="#top"><span class="brand-mark">J</span><span class="brand-text">자바 속독</span></a>
+    <a class="brand" href="#top"><span class="brand-mark">J</span><span class="brand-text">자바 문법 노트</span></a>
     <div class="nav-links" id="navLinks">
       <a href="#basics">기본 문법</a>
-      <a href="#classes">자주 쓰는 클래스</a>
-      <a href="#plan">하루 플랜</a>
-      <a href="#spring-lab">Spring 실습</a>
-      <a href="#wrap-up">정리</a>
+      <a href="#classes">표준 클래스</a>
+      <a href="#oop">객체지향</a>
+      <a href="#server">서버 필수 문법</a>
+      <a href="#spring">Spring 속 자바</a>
+      <a href="#review">복습</a>
     </div>
+    <div class="search"><input type="search" id="q" placeholder="문법 검색" aria-label="문법 검색" autocomplete="off"><kbd>/</kbd></div>
     <button class="icon-btn" id="themeBtn" type="button" aria-label="다크 모드 전환">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="lbl">테마</span>
     </button>
-    <button class="icon-btn" id="tocBtn" type="button" aria-label="목차 열기" aria-controls="drawer" aria-expanded="false">
+    <button class="icon-btn" id="tocBtn" type="button" aria-label="목차와 검색 열기" aria-controls="drawer" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>목차
     </button>
   </div>
@@ -271,40 +256,46 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
 <div class="drawer-backdrop" id="backdrop"></div>
 <aside class="drawer" id="drawer" aria-label="목차">
   <div class="drawer-head"><b>목차</b><button class="icon-btn" id="drawerClose" type="button">닫기</button></div>
+  <div class="search"><input type="search" id="q2" placeholder="문법 검색" aria-label="문법 검색" autocomplete="off"></div>
   <nav class="toc" id="tocMobile"></nav>
 </aside>
 
 <div class="layout" id="top">
-  <aside class="sidebar"><nav class="toc" id="tocDesktop" aria-label="페이지 목차"><div class="toc-title">이 페이지</div></nav></aside>
+  <aside class="sidebar"><nav class="toc" id="tocDesktop" aria-label="페이지 목차"><div class="toc-title">목차</div></nav></aside>
 
 <main>
 
 <header class="hero">
-  <span class="eyebrow">Java → Spring 준비 · 하루 완주</span>
-  <h1>자바 하루 속독 플랜</h1>
-  <p class="lead">목표는 자바를 "다 아는 것"이 아니라, Spring 코드를 열었을 때 <b>클래스·인터페이스·어노테이션·컬렉션</b>이 읽히는 상태가 되는 것입니다. 앞부분은 찾아보는 <b>문법 사전</b>, 뒷부분은 따라 하는 <b>하루 플랜</b>입니다. 체크한 항목은 이 브라우저에 저장됩니다.</p>
-  <div class="progress">
-    <div class="bar"><span id="bar"></span></div>
-    <span class="progress-label" id="plabel">0 / 0 완료</span>
-  </div>
+  <span class="eyebrow">Java for Server · Reference</span>
+  <h1>자바 문법 노트</h1>
+  <p class="lead">서버 공부하다가 "이거 문법이 뭐였지?" 싶을 때 펼쳐 보는 정리입니다. 위에서부터 순서대로 읽어도 되고, <kbd>/</kbd> 키로 검색해서 필요한 항목만 찾아봐도 됩니다. 마지막 <a href="#review">복습</a> 파트의 질문으로 주기적으로 점검하세요.</p>
   <div class="quick">
-    <a href="#basics"><b>기본 문법</b><span>변수, 조건문, 반복문, 배열, 메서드, String</span></a>
-    <a href="#classes"><b>자주 쓰는 클래스</b><span>Scanner, Math, Arrays, ArrayList, HashMap…</span></a>
-    <a href="#plan"><b>하루 플랜</b><span>09:00부터 22:15까지 8개 블록 체크리스트</span></a>
-    <a href="#spring-lab"><b>Spring 첫 실습</b><span>Controller · Service · Repository 만들기</span></a>
+    <a href="#basics"><b>기본 문법</b><span>변수, 연산자, 조건문, 반복문, 배열, 메서드, String</span></a>
+    <a href="#classes"><b>표준 클래스</b><span>Scanner, Math, Arrays, Integer, 컬렉션, 날짜</span></a>
+    <a href="#oop"><b>객체지향</b><span>클래스, 상속, 인터페이스, 다형성, equals/hashCode</span></a>
+    <a href="#server"><b>서버 필수 문법</b><span>제네릭, Optional, 예외, 람다, Stream, enum, record</span></a>
+    <a href="#spring"><b>Spring 속 자바</b><span>계층 구조, DI, Lombok, 전체 예제 코드</span></a>
+    <a href="#review"><b>복습</b><span>자주 하는 실수, 셀프 체크 질문</span></a>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>팁</span>
+    <span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>자주 하는 실수</span>
+    <span><i style="background:var(--spring-soft);border:1px solid var(--spring)"></i>Spring에서는</span>
   </div>
 </header>
+
+<p class="no-result" id="noResult" hidden>검색 결과가 없습니다. 다른 단어로 찾아보세요. (예: <code>split</code>, <code>Optional</code>, <code>상속</code>)</p>
 
 <!-- ====================================================== -->
 <section id="basics">
   <div class="section-head">
-    <span class="eyebrow">Part 1 · 문법 사전</span>
-    <h2>자바 기본 문법</h2>
-    <p class="lead">하루 플랜의 블록 1에서 이 부분을 교재로 씁니다. 예제는 모두 <code>main</code> 메서드 안에 붙여 넣으면 바로 실행됩니다.</p>
+    <span class="eyebrow">Part 1</span>
+    <h2>기본 문법</h2>
+    <p class="lead">예제는 모두 <code>main</code> 메서드 안에 붙여 넣으면 바로 실행됩니다.</p>
   </div>
 
   <article class="topic" id="b-structure">
-    <h3><span class="num">01</span>프로그램 구조와 출력</h3>
+    <h3><span class="num">1.1</span>프로그램 구조와 출력</h3>
     <p>자바 코드는 반드시 <b>클래스 안</b>에 있고, 프로그램은 <code>main</code> 메서드부터 실행됩니다. 파일 이름은 <code>public class</code> 이름과 같아야 합니다(<code>Main.java</code>).</p>
 <pre><code class="language-java">public class Main {                        // 클래스 이름 = 파일 이름
     public static void main(String[] args) { // 실행 시작점
@@ -334,12 +325,13 @@ footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--li
         <tr><td><code>%n</code></td><td>줄바꿈</td><td><code>\n</code>과 같은 역할</td></tr>
       </tbody>
     </table></div>
-    <p class="tip"><b>문자열로 받고 싶으면</b> · 출력하지 않고 문자열만 만들 때는 <code>String.format("%.2f", x)</code>를 씁니다. 형식은 printf와 같습니다.</p>
+    <p class="tip"><b>문자열로 받고 싶으면</b> · 출력하지 않고 문자열만 만들 때는 <code>String.format("%.2f", x)</code> 또는 <code>"%d개".formatted(3)</code>을 씁니다.</p>
+    <p class="spring-note"><b>Spring에서는</b> · <code>System.out.println</code> 대신 로거(<code>log.info("회원 가입 id={}", id)</code>)를 씁니다. 출력 위치·레벨을 설정으로 조절할 수 있기 때문입니다.</p>
   </article>
 
   <article class="topic" id="b-variables">
-    <h3><span class="num">02</span>변수와 자료형</h3>
-    <p>자바는 변수를 만들 때 <b>타입을 먼저</b> 적습니다. 타입은 크게 값을 직접 담는 <b>기본 타입 8개</b>와, 객체의 주소를 담는 <b>참조 타입</b>(String, 배열, 클래스 등)으로 나뉩니다.</p>
+    <h3><span class="num">1.2</span>변수와 자료형</h3>
+    <p>자바는 변수를 만들 때 <b>타입을 먼저</b> 적습니다. 값을 직접 담는 <b>기본 타입 8개</b>와, 객체의 주소를 담는 <b>참조 타입</b>(String, 배열, 클래스 등)으로 나뉩니다.</p>
     <div class="table-wrap"><table>
       <thead><tr><th>타입</th><th>크기</th><th>범위 · 용도</th><th>예</th></tr></thead>
       <tbody>
@@ -362,12 +354,18 @@ var list = new ArrayList&lt;String&gt;();  // var: 오른쪽을 보고 타입 �
 final int MAX = 100;                 // final: 다시 대입 불가 = 상수
 // MAX = 200;                        // 컴파일 에러
 
-int big = 1_000_000;  // 숫자 사이 _ 는 읽기 편하게 하는 구분자</code></pre>
-    <p class="warn"><b>자주 하는 실수</b> · 지역 변수는 값을 넣기 전에 쓰면 컴파일 에러가 납니다. <code>int x; System.out.println(x);</code> → "variable x might not have been initialized"</p>
+int big = 1_000_000;  // 숫자 사이 _ 는 읽기 편하게 하는 구분자
+
+// 텍스트 블록 (Java 15+): 여러 줄 문자열. SQL, JSON 쓸 때 편함
+String json = """
+        {"name": "kim", "age": 25}
+        """;</code></pre>
+    <p class="warn"><b>자주 하는 실수</b> · 지역 변수는 값을 넣기 전에 쓰면 컴파일 에러가 납니다. 반면 <b>필드</b>는 자동으로 기본값(0, false, null)이 들어갑니다.</p>
+    <p class="spring-note"><b>Spring에서는</b> · Entity의 id는 <code>Long</code>(대문자, 래퍼 클래스)을 씁니다. 저장 전에는 id가 없으므로 <code>null</code>을 담을 수 있어야 하기 때문입니다.</p>
   </article>
 
   <article class="topic" id="b-operators">
-    <h3><span class="num">03</span>연산자</h3>
+    <h3><span class="num">1.3</span>연산자</h3>
 <pre><code class="language-java">// 산술
 int a = 7, b = 2;
 System.out.println(a + b);   // 9
@@ -385,10 +383,11 @@ System.out.println(a &gt; b);   // true
 System.out.println(a == 7);  // true  (같다)
 System.out.println(a != 7);  // false (다르다)
 
-// 논리
+// 논리 (&amp;&amp; 와 || 는 앞에서 결과가 정해지면 뒤를 계산하지 않음)
 boolean adult = age &gt;= 20 &amp;&amp; age &lt; 65;  // 그리고
 boolean weekend = day == 6 || day == 7;   // 또는
 boolean notOk = !ok;                      // 반대
+if (member != null &amp;&amp; member.isActive()) { ... }  // null 이면 뒤는 실행 안 됨 → 안전
 
 // 삼항 연산자: 조건 ? 참일 때 : 거짓일 때
 String result = score &gt;= 60 ? "합격" : "불합격";</code></pre>
@@ -396,19 +395,19 @@ String result = score &gt;= 60 ? "합격" : "불합격";</code></pre>
   </article>
 
   <article class="topic" id="b-casting">
-    <h3><span class="num">04</span>형변환</h3>
-    <p>작은 타입 → 큰 타입은 자동으로 바뀌고, 큰 타입 → 작은 타입은 <code>(타입)</code>을 붙여 직접 바꿔야 합니다. 문자열과 숫자 사이는 메서드로 바꿉니다.</p>
+    <h3><span class="num">1.4</span>형변환</h3>
+    <p>작은 타입 → 큰 타입은 자동, 큰 타입 → 작은 타입은 <code>(타입)</code>을 붙여 직접 바꿉니다. 문자열과 숫자 사이는 메서드로 바꿉니다.</p>
 <pre><code class="language-java">// 숫자끼리
 int n = 10;
-double d = n;              // 자동: 10.0
-int cut = (int) 3.99;      // 강제: 3 (반올림 아님, 버림)
+double d = n;                 // 자동: 10.0
+int cut = (int) 3.99;         // 강제: 3 (반올림 아님, 버림)
 double avg = (double) 7 / 2;  // 3.5 (나누기 전에 바꿔야 함)
 
 // 문자 ↔ 숫자
 char c = 'A';
-int code = c;              // 65 (유니코드 값)
+int code = c;                 // 65 (유니코드 값)
 char next = (char) (c + 1);   // 'B'
-int digit = '7' - '0';     // 7 (숫자 문자 → 정수, 코테 단골)
+int digit = '7' - '0';        // 7 (숫자 문자 → 정수)
 
 // 문자열 → 숫자
 int x = Integer.parseInt("123");
@@ -417,34 +416,18 @@ long z = Long.parseLong("10000000000");
 
 // 숫자 → 문자열
 String s1 = String.valueOf(123);   // "123"
-String s2 = 123 + "";              // "123" (간단하지만 덜 명확)
-String s3 = Integer.toString(123); // "123"</code></pre>
-    <p class="warn"><b>예외 주의</b> · <code>Integer.parseInt("12a")</code>처럼 숫자가 아닌 문자열을 넣으면 <code>NumberFormatException</code>이 발생합니다.</p>
+String s2 = Integer.toString(123); // "123"</code></pre>
+    <p class="warn"><b>예외 주의</b> · <code>Integer.parseInt("12a")</code>처럼 숫자가 아닌 문자열을 넣으면 <code>NumberFormatException</code>. 사용자 입력을 바꿀 때는 <a href="#m-exception">try-catch</a>로 감쌉니다.</p>
   </article>
 
   <article class="topic" id="b-if">
-    <h3><span class="num">05</span>조건문 <span class="api">if · switch</span></h3>
-<pre><code class="language-java">int score = 85;
-
-if (score &gt;= 90) {
-    System.out.println("A");
+    <h3><span class="num">1.5</span>조건문 <span class="api">if · switch</span></h3>
+<pre><code class="language-java">if (score &gt;= 90) {
+    grade = "A";
 } else if (score &gt;= 80) {
-    System.out.println("B");
+    grade = "B";
 } else {
-    System.out.println("C 이하");
-}
-
-// switch (전통 방식): break를 빠뜨리면 아래로 계속 실행됨
-switch (day) {
-    case 1:
-        System.out.println("월");
-        break;
-    case 6:
-    case 7:
-        System.out.println("주말");
-        break;
-    default:
-        System.out.println("평일");
+    grade = "C";
 }
 
 // switch 화살표 문법 (Java 14+): break 필요 없고 값을 바로 돌려받음
@@ -453,33 +436,50 @@ String name = switch (day) {
     case 2 -&gt; "화";
     case 6, 7 -&gt; "주말";
     default -&gt; "기타";
-};</code></pre>
-    <p class="tip"><b>새 코드라면</b> · 화살표 문법 switch를 쓰세요. break 실수가 원천적으로 없어집니다.</p>
+};
+
+// 여러 줄이 필요하면 블록 + yield
+int fee = switch (grade) {
+    case "VIP" -&gt; 0;
+    case "GOLD" -&gt; {
+        int base = 3000;
+        yield base / 2;
+    }
+    default -&gt; 3000;
+};
+
+// 전통 switch: break를 빠뜨리면 아래 case까지 계속 실행됨
+switch (day) {
+    case 1:
+        System.out.println("월");
+        break;
+    default:
+        System.out.println("기타");
+}</code></pre>
+    <p class="tip"><b>조기 반환(early return)</b> · 서버 코드에서는 if-else를 깊게 중첩하기보다, 예외 상황을 먼저 걸러 <code>return</code>/<code>throw</code>하고 본 로직을 아래에 둡니다. <code>if (member == null) throw new ...;</code></p>
   </article>
 
   <article class="topic" id="b-loop">
-    <h3><span class="num">06</span>반복문 <span class="api">for · while</span></h3>
+    <h3><span class="num">1.6</span>반복문 <span class="api">for · while</span></h3>
 <pre><code class="language-java">// 기본 for: 횟수가 정해져 있을 때
 for (int i = 0; i &lt; 5; i++) {
     System.out.println(i);   // 0 1 2 3 4
 }
 
 // 향상된 for (for-each): 배열·리스트 전체를 돌 때
-int[] nums = {3, 5, 7};
-for (int n : nums) {
-    System.out.println(n);
+for (String name : names) {
+    System.out.println(name);
 }
 
 // while: 조건이 참인 동안
-int count = 3;
 while (count &gt; 0) {
-    System.out.println(count--);   // 3 2 1
+    count--;
 }
 
 // do-while: 최소 한 번은 실행
 do {
-    System.out.println("한 번은 실행");
-} while (false);
+    input = read();
+} while (input.isBlank());
 
 // break / continue
 for (int i = 1; i &lt;= 10; i++) {
@@ -488,85 +488,71 @@ for (int i = 1; i &lt;= 10; i++) {
     System.out.println(i);     // 1 3 5 7
 }
 
-// 구구단: 이중 for
-for (int i = 2; i &lt;= 9; i++) {
-    for (int j = 1; j &lt;= 9; j++) {
-        System.out.printf("%d x %d = %d%n", i, j, i * j);
-    }
-}</code></pre>
+// 리스트의 forEach + 람다
+names.forEach(name -&gt; System.out.println(name));</code></pre>
+    <p class="warn"><b>for-each 중 삭제 금지</b> · <code>for (String s : list) { list.remove(s); }</code>는 <code>ConcurrentModificationException</code>. 대신 <code>list.removeIf(s -&gt; s.isBlank());</code>를 씁니다.</p>
   </article>
 
   <article class="topic" id="b-array">
-    <h3><span class="num">07</span>배열</h3>
-    <p>같은 타입 값을 <b>고정 길이</b>로 담습니다. 길이를 바꿔야 하면 배열 대신 <a href="#c-collections">ArrayList</a>를 씁니다.</p>
+    <h3><span class="num">1.7</span>배열</h3>
+    <p>같은 타입 값을 <b>고정 길이</b>로 담습니다. 길이를 바꿔야 하면 <a href="#c-collections">ArrayList</a>를 씁니다. 서버 코드에서는 배열보다 List를 훨씬 많이 씁니다.</p>
 <pre><code class="language-java">int[] scores = new int[3];      // 길이 3, 모두 0으로 채워짐
 scores[0] = 90;                 // 인덱스는 0부터
-scores[2] = 70;
 
 int[] nums = {5, 2, 9, 1};      // 선언과 동시에 값 넣기
-System.out.println(nums.length);    // 4  (괄호 없음! String은 length())
-System.out.println(nums[nums.length - 1]);  // 마지막 원소: 1
+nums.length;                    // 4  (괄호 없음! String은 length(), List는 size())
+nums[nums.length - 1];          // 마지막 원소: 1
 
-// 합계와 최댓값
-int sum = 0, max = nums[0];
-for (int n : nums) {
-    sum += n;
-    if (n &gt; max) max = n;
-}
-
-// 출력은 Arrays.toString (그냥 println 하면 주소가 나옴)
-System.out.println(nums);                   // [I@1b6d3586  ← 의미 없음
+System.out.println(nums);                   // [I@1b6d3586  ← 주소, 의미 없음
 System.out.println(Arrays.toString(nums));  // [5, 2, 9, 1]
 
 // 2차원 배열
 int[][] grid = new int[3][4];   // 3행 4열
-grid[1][2] = 7;
 int[][] board = { {1, 2}, {3, 4} };
-for (int[] row : board) {
-    System.out.println(Arrays.toString(row));
-}</code></pre>
+board[1][0];                    // 3</code></pre>
     <p class="warn"><b>자주 하는 실수</b> · 길이 4 배열에서 <code>nums[4]</code>에 접근하면 <code>ArrayIndexOutOfBoundsException</code>. 마지막 인덱스는 항상 <code>length - 1</code>입니다.</p>
   </article>
 
   <article class="topic" id="b-method">
-    <h3><span class="num">08</span>메서드</h3>
-    <p>반복되는 코드를 이름 붙여 묶은 것입니다. <code>[접근제어자] [static] 반환타입 이름(매개변수)</code> 모양입니다. 돌려줄 값이 없으면 반환 타입은 <code>void</code>입니다.</p>
-<pre><code class="language-java">public class Main {
+    <h3><span class="num">1.8</span>메서드</h3>
+    <p><code>[접근제어자] [static] 반환타입 이름(매개변수)</code> 모양입니다. 돌려줄 값이 없으면 반환 타입은 <code>void</code>입니다.</p>
+<pre><code class="language-java">public class Calculator {
 
-    // 두 수를 받아 합을 돌려줌
-    static int add(int a, int b) {
+    public int add(int a, int b) {        // 값을 돌려줌
         return a + b;
     }
 
-    // 돌려줄 값이 없음
-    static void greet(String name) {
-        System.out.println("안녕, " + name);
+    public void printSum(int a, int b) {  // 돌려줄 값 없음
+        System.out.println(a + b);
     }
 
-    // 오버로딩: 이름이 같아도 매개변수가 다르면 OK
-    static double add(double a, double b) {
+    // 오버로딩: 이름이 같아도 매개변수 타입·개수가 다르면 OK
+    public double add(double a, double b) {
         return a + b;
     }
 
-    // 가변 인자: 개수 상관없이 받기
-    static int sumAll(int... nums) {
+    // 가변 인자: 개수 상관없이 받기 (내부에서는 배열)
+    public int sumAll(int... nums) {
         int s = 0;
         for (int n : nums) s += n;
         return s;
     }
 
-    public static void main(String[] args) {
-        int r = add(3, 4);          // 7
-        greet("kim");
-        double d = add(1.5, 2.5);   // 4.0
-        int all = sumAll(1, 2, 3, 4);  // 10
+    // static 메서드: 객체 없이 클래스 이름으로 호출
+    public static int square(int x) {
+        return x * x;
     }
-}</code></pre>
-    <p class="tip"><b>static이 붙은 이유</b> · <code>main</code>이 static이라 같은 클래스의 메서드를 객체 없이 바로 부르려면 static이어야 합니다. 클래스와 객체를 배우면(블록 2) static 없는 메서드를 <code>객체.메서드()</code>로 부르게 됩니다.</p>
+}
+
+Calculator calc = new Calculator();
+calc.add(3, 4);               // 7   (객체.메서드)
+calc.sumAll(1, 2, 3, 4);      // 10
+Calculator.square(5);         // 25  (클래스.메서드)</code></pre>
+    <p class="tip"><b>값 전달</b> · 자바는 항상 값을 복사해서 넘깁니다. 기본 타입은 값이 복사돼서 메서드 안에서 바꿔도 밖에 영향이 없고, 객체는 <b>주소가 복사</b>돼서 메서드 안에서 객체 내용을 바꾸면 밖에서도 바뀐 게 보입니다.</p>
   </article>
 
   <article class="topic" id="b-string">
-    <h3><span class="num">09</span>문자열 String</h3>
+    <h3><span class="num">1.9</span>문자열 String · StringBuilder</h3>
     <p>String은 <b>한 번 만들면 바뀌지 않습니다</b>(불변). <code>toUpperCase()</code> 같은 메서드는 원본을 바꾸지 않고 새 문자열을 돌려줍니다.</p>
 <pre><code class="language-java">String s = "Hello, Java";
 
@@ -577,35 +563,28 @@ s.substring(0, 5);        // "Hello"    0번부터 5번 '전'까지
 s.indexOf("Java");        // 7   (없으면 -1)
 s.contains("lo");         // true
 s.startsWith("He");       // true
+s.endsWith(".png");       // false
 s.toUpperCase();          // "HELLO, JAVA"
 s.replace("Java", "World");  // "Hello, World"
-"  hi  ".trim();          // "hi"  양쪽 공백 제거 (strip()도 같음)
+"  hi  ".strip();         // "hi"  양쪽 공백 제거 (trim()과 비슷)
 "".isEmpty();             // true
 "   ".isBlank();          // true  (공백만 있어도 true)
 "a,b,c".split(",");       // ["a", "b", "c"] 배열
-String.join("-", "a", "b", "c");  // "a-b-c"
+String.join("-", List.of("a", "b"));  // "a-b"
 "ab".repeat(3);           // "ababab"
 
 // 비교는 반드시 equals
-String a = new String("hi");
-String b = "hi";
-a == b;                   // false  ← 주소 비교
-a.equals(b);              // true   ← 값 비교
-a.equalsIgnoreCase("HI"); // true   대소문자 무시
+a.equals(b);              // 값 비교 (== 는 주소 비교)
+a.equalsIgnoreCase("HI"); // 대소문자 무시
+"admin".equals(role);     // 상수를 앞에 두면 role이 null이어도 NPE 없음
 
-// 한 글자씩 돌기
-for (char c : s.toCharArray()) {
-    System.out.print(c);
-}</code></pre>
-    <h4>StringBuilder: 문자열을 많이 이어붙일 때</h4>
-<pre><code class="language-java">// 반복문에서 s += "x" 를 하면 매번 새 String이 생겨 느림
+// 많이 이어붙일 때는 StringBuilder
 StringBuilder sb = new StringBuilder();
-for (int i = 0; i &lt; 5; i++) {
-    sb.append(i).append(", ");
+for (String name : names) {
+    sb.append(name).append(", ");
 }
-sb.setLength(sb.length() - 2);   // 마지막 ", " 제거
-sb.reverse();                    // 뒤집기
-String result = sb.toString();   // 다 쓰면 String으로</code></pre>
+sb.reverse();
+String result = sb.toString();</code></pre>
     <p class="warn"><b>가장 흔한 실수</b> · 문자열 비교에 <code>==</code>을 쓰면 값이 같아도 false가 나올 수 있습니다. 문자열은 항상 <code>equals()</code>로 비교하세요.</p>
   </article>
 </section>
@@ -613,419 +592,376 @@ String result = sb.toString();   // 다 쓰면 String으로</code></pre>
 <!-- ====================================================== -->
 <section id="classes">
   <div class="section-head">
-    <span class="eyebrow">Part 2 · 표준 라이브러리</span>
-    <h2>자주 쓰는 클래스와 객체 호출</h2>
-    <p class="lead">자바가 기본으로 주는 클래스들입니다. 객체를 만들어 쓰는 것(<code>new Scanner(...)</code>)과 클래스 이름으로 바로 부르는 것(<code>Math.max(...)</code>, static 메서드)이 있다는 점을 같이 보세요.</p>
+    <span class="eyebrow">Part 2</span>
+    <h2>자주 쓰는 표준 클래스</h2>
+    <p class="lead">자바가 기본으로 주는 클래스들입니다. 객체를 만들어 쓰는 것(<code>new Scanner(...)</code>)과 클래스 이름으로 바로 부르는 것(<code>Math.max(...)</code>)을 구분해서 보세요.</p>
   </div>
 
   <article class="topic" id="c-call">
-    <h3><span class="num">00</span>객체 호출 두 가지 방식</h3>
+    <h3><span class="num">2.1</span>객체 호출 두 가지 방식과 import</h3>
 <pre><code class="language-java">// 1) 객체를 만들고(new) 그 객체의 메서드를 부른다
 Scanner sc = new Scanner(System.in);   // 객체 생성
 int n = sc.nextInt();                  // 객체.메서드()
 
-ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
 list.add("kim");
 
 // 2) static 메서드는 객체 없이 클래스 이름으로 바로 부른다
 int big = Math.max(3, 7);              // 클래스.메서드()
 int num = Integer.parseInt("42");
-String s = String.valueOf(10);
-Arrays.sort(arr);</code></pre>
-    <p class="tip"><b>import</b> · <code>String</code>, <code>Math</code>, <code>Integer</code>, <code>System</code>은 <code>java.lang</code> 패키지라 import 없이 씁니다. <code>Scanner</code>, <code>ArrayList</code>, <code>Arrays</code> 등은 <code>import java.util.*;</code>가 필요합니다. IntelliJ에서는 빨간 글자에 커서를 두고 <code>Alt+Enter</code>(Mac은 <code>⌥↩</code>)로 자동 추가됩니다.</p>
+List&lt;Integer&gt; fixed = List.of(1, 2, 3);  // 정적 팩토리 메서드</code></pre>
+    <p class="tip"><b>import</b> · <code>String</code>, <code>Math</code>, <code>Integer</code>, <code>System</code>은 <code>java.lang</code>이라 import 없이 씁니다. <code>Scanner</code>, <code>List</code>, <code>Arrays</code> 등은 <code>import java.util.*;</code>가 필요합니다. IntelliJ에서 빨간 글자에 커서를 두고 <kbd>Alt</kbd>+<kbd>Enter</kbd>(Mac은 <kbd>⌥</kbd><kbd>↩</kbd>)로 자동 추가됩니다.</p>
   </article>
 
   <article class="topic" id="c-scanner">
-    <h3><span class="num">01</span>Scanner <span class="api">java.util.Scanner · 키보드 입력</span></h3>
-    <p>콘솔에서 사용자 입력을 받을 때 씁니다. <code>System.in</code>(키보드)을 넣어서 객체를 만듭니다.</p>
+    <h3><span class="num">2.2</span>Scanner <span class="api">java.util.Scanner · 키보드 입력</span></h3>
 <pre><code class="language-java">import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+Scanner sc = new Scanner(System.in);
 
-        System.out.print("이름: ");
-        String name = sc.next();        // 공백 전까지 한 단어
+String word = sc.next();          // 공백 전까지 한 단어
+int age = sc.nextInt();           // 정수
+double h = sc.nextDouble();       // 실수
+sc.nextLine();                    // ← 남은 엔터 비우기 (아래 설명)
+String line = sc.nextLine();      // 공백 포함 한 줄 전체
 
-        System.out.print("나이: ");
-        int age = sc.nextInt();         // 정수
+// N개 입력받기 (입력 예: "3" 다음 줄 "10 20 30")
+int n = sc.nextInt();
+int[] arr = new int[n];
+for (int i = 0; i &lt; n; i++) arr[i] = sc.nextInt();
 
-        System.out.print("키: ");
-        double height = sc.nextDouble(); // 실수
+// 숫자가 아닌 입력 거르기
+while (!sc.hasNextInt()) {
+    System.out.print("숫자만 입력하세요: ");
+    sc.next();                    // 잘못된 입력 버리기
+}
 
-        sc.nextLine();                  // ← 남은 엔터 비우기 (아래 설명)
-
-        System.out.print("자기소개: ");
-        String intro = sc.nextLine();   // 공백 포함 한 줄 전체
-
-        System.out.printf("%s(%d세, %.1fcm): %s%n", name, age, height, intro);
-        sc.close();
-    }
-}</code></pre>
+sc.close();</code></pre>
     <div class="table-wrap"><table>
       <thead><tr><th>메서드</th><th>읽는 것</th><th>입력 → 결과</th></tr></thead>
       <tbody>
-        <tr><td><code>nextInt()</code></td><td>정수 하나</td><td><code>42</code> → 42</td></tr>
-        <tr><td><code>nextLong()</code> / <code>nextDouble()</code></td><td>큰 정수 / 실수</td><td><code>3.5</code> → 3.5</td></tr>
+        <tr><td><code>nextInt()</code> / <code>nextLong()</code> / <code>nextDouble()</code></td><td>숫자 하나</td><td><code>42</code> → 42</td></tr>
         <tr><td><code>next()</code></td><td>공백·엔터 전까지 한 단어</td><td><code>hong gildong</code> → "hong"</td></tr>
         <tr><td><code>nextLine()</code></td><td>엔터 전까지 한 줄 전체</td><td><code>hong gildong</code> → "hong gildong"</td></tr>
-        <tr><td><code>nextBoolean()</code></td><td>true/false</td><td><code>true</code> → true</td></tr>
-        <tr><td><code>hasNextInt()</code></td><td>다음이 정수인지 확인</td><td>잘못된 입력 거르기</td></tr>
-        <tr><td><code>hasNext()</code></td><td>입력이 남았는지</td><td>입력 끝까지 읽을 때</td></tr>
+        <tr><td><code>hasNextInt()</code> / <code>hasNext()</code></td><td>다음 입력이 정수인지 / 남았는지</td><td>입력 검증, 끝까지 읽기</td></tr>
       </tbody>
     </table></div>
-    <p class="warn"><b>nextInt 다음 nextLine 함정</b> · <code>nextInt()</code>는 숫자만 가져가고 <b>엔터(\n)를 남겨둡니다</b>. 그 다음 <code>nextLine()</code>은 남은 엔터를 읽고 바로 빈 문자열을 돌려줍니다. 그래서 숫자 입력 뒤 한 줄을 받으려면 위 예제처럼 <code>sc.nextLine();</code>을 한 번 더 호출해 버퍼를 비웁니다.</p>
-    <h4>자주 쓰는 패턴</h4>
-<pre><code class="language-java">// 첫 줄에 개수 N, 다음 줄에 N개의 숫자
-// 입력 예: 3
-//         10 20 30
-int n = sc.nextInt();
-int[] arr = new int[n];
-for (int i = 0; i &lt; n; i++) {
-    arr[i] = sc.nextInt();
-}
-
-// 숫자가 아닌 입력 걸러내기
-System.out.print("숫자 입력: ");
-while (!sc.hasNextInt()) {
-    System.out.print("숫자만 입력하세요: ");
-    sc.next();                  // 잘못된 입력 버리기
-}
-int value = sc.nextInt();
-
-// 메뉴 반복 (0 입력 시 종료)
-while (true) {
-    System.out.print("1.추가 2.목록 0.종료 &gt; ");
-    int menu = sc.nextInt();
-    if (menu == 0) break;
-    switch (menu) {
-        case 1 -&gt; System.out.println("추가");
-        case 2 -&gt; System.out.println("목록");
-        default -&gt; System.out.println("잘못된 메뉴");
-    }
-}</code></pre>
+    <p class="warn"><b>nextInt 다음 nextLine 함정</b> · <code>nextInt()</code>는 숫자만 가져가고 <b>엔터(\n)를 남겨둡니다</b>. 바로 다음 <code>nextLine()</code>은 그 엔터를 읽고 빈 문자열을 돌려줍니다. 숫자 입력 뒤 한 줄을 받으려면 <code>sc.nextLine();</code>을 한 번 더 호출해 비웁니다.</p>
+    <p class="spring-note"><b>Spring에서는</b> · 웹 서버의 입력은 키보드가 아니라 HTTP 요청이라 Scanner를 쓰지 않습니다. 대신 <code>@RequestBody</code>, <code>@PathVariable</code>, <code>@RequestParam</code>으로 받습니다.</p>
   </article>
 
   <article class="topic" id="c-buffered">
-    <h3><span class="num">02</span>BufferedReader <span class="api">빠른 입력 · 코딩테스트용</span></h3>
-    <p>입력이 수만 줄 이상이면 Scanner가 느려서 시간 초과가 납니다. 이때는 줄 단위로 빠르게 읽는 BufferedReader를 씁니다. 항상 <b>문자열</b>로 읽으므로 숫자는 직접 변환합니다.</p>
+    <h3><span class="num">2.3</span>BufferedReader <span class="api">빠른 입력 · 코딩테스트용</span></h3>
 <pre><code class="language-java">import java.io.*;
 import java.util.*;
 
-public class Main {
-    public static void main(String[] args) throws IOException {  // throws 필수
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = Integer.parseInt(br.readLine());          // 한 줄 → 정수
+    int n = Integer.parseInt(br.readLine());                  // 한 줄 → 정수
+    StringTokenizer st = new StringTokenizer(br.readLine());  // "10 20 30" 쪼개기
+    int a = Integer.parseInt(st.nextToken());
+    String[] parts = br.readLine().split(" ");                // split 도 가능
 
-        StringTokenizer st = new StringTokenizer(br.readLine());  // "10 20 30" 공백으로 쪼개기
-        int[] arr = new int[n];
-        for (int i = 0; i &lt; n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-        // split 으로도 가능
-        String[] parts = br.readLine().split(" ");
-
-        // 출력도 많으면 StringBuilder에 모아서 한 번에
-        StringBuilder sb = new StringBuilder();
-        for (int x : arr) sb.append(x).append('\n');
-        System.out.print(sb);
-    }
+    StringBuilder sb = new StringBuilder();   // 출력이 많으면 모아서 한 번에
+    sb.append(a).append('\n');
+    System.out.print(sb);
 }</code></pre>
-    <p class="tip"><b>언제 뭘 쓰나</b> · 연습·콘솔 프로그램은 Scanner, 백준·프로그래머스에서 입력이 많을 때는 BufferedReader. Spring 웹 개발에서는 둘 다 거의 안 씁니다(입력이 HTTP 요청으로 들어옴).</p>
+    <p class="tip"><b>언제 뭘 쓰나</b> · 연습·콘솔 프로그램은 Scanner, 백준처럼 입력이 수만 줄이면 BufferedReader. 항상 문자열로 읽으므로 숫자는 직접 변환합니다.</p>
   </article>
 
   <article class="topic" id="c-math">
-    <h3><span class="num">03</span>Math <span class="api">java.lang.Math · static</span></h3>
+    <h3><span class="num">2.4</span>Math · Random · UUID</h3>
 <pre><code class="language-java">Math.max(3, 7);      // 7
 Math.min(3, 7);      // 3
 Math.abs(-5);        // 5
 Math.pow(2, 10);     // 1024.0  (double 반환)
 Math.sqrt(16);       // 4.0
-Math.round(2.5);     // 3       (반올림, long 반환)
-Math.ceil(2.1);      // 3.0     올림
+Math.round(2.5);     // 3       반올림 (long 반환)
+Math.ceil(2.1);      // 3.0     올림 (페이지 수 계산에 자주 씀)
 Math.floor(2.9);     // 2.0     내림
-Math.random();       // 0.0 이상 1.0 미만 실수
 
-// 1~6 주사위
-int dice = (int) (Math.random() * 6) + 1;
-
-// 소수 둘째 자리 반올림
-double v = Math.round(3.14159 * 100) / 100.0;   // 3.14</code></pre>
-  </article>
-
-  <article class="topic" id="c-random">
-    <h3><span class="num">04</span>Random <span class="api">java.util.Random</span></h3>
-<pre><code class="language-java">import java.util.Random;
+int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
 Random random = new Random();
-int a = random.nextInt(10);        // 0 ~ 9
-int b = random.nextInt(1, 7);      // 1 ~ 6  (Java 17+)
-double d = random.nextDouble();    // 0.0 ~ 1.0 미만
-boolean coin = random.nextBoolean();
+random.nextInt(10);        // 0 ~ 9
+random.nextInt(1, 7);      // 1 ~ 6  (Java 17+)
 
-Random fixed = new Random(42);     // 시드 고정: 매번 같은 순서의 난수 (테스트용)</code></pre>
+String token = UUID.randomUUID().toString();   // 겹치지 않는 랜덤 ID</code></pre>
   </article>
 
   <article class="topic" id="c-arrays">
-    <h3><span class="num">05</span>Arrays <span class="api">java.util.Arrays · 배열 도우미</span></h3>
-<pre><code class="language-java">import java.util.Arrays;
+    <h3><span class="num">2.5</span>Arrays <span class="api">배열 도우미</span></h3>
+<pre><code class="language-java">int[] nums = {5, 2, 9, 1};
 
-int[] nums = {5, 2, 9, 1};
-
-Arrays.toString(nums);            // "[5, 2, 9, 1]"  출력용
-Arrays.sort(nums);                // 원본을 오름차순 정렬 → [1, 2, 5, 9]
-Arrays.binarySearch(nums, 5);     // 2  (정렬된 배열에서 위치 찾기)
-Arrays.fill(nums, 0);             // 전부 0으로
-int[] copy = Arrays.copyOf(nums, 6);       // 길이 6으로 복사 (남는 칸 0)
-int[] part = Arrays.copyOfRange(nums, 1, 3);
-Arrays.equals(nums, copy);        // 내용 비교 (== 는 주소 비교)
-
-// 합계·최댓값은 stream으로 한 줄
+Arrays.toString(nums);              // "[5, 2, 9, 1]"
+Arrays.sort(nums);                  // 원본을 오름차순 정렬
+Arrays.fill(nums, 0);               // 전부 0으로
+int[] copy = Arrays.copyOf(nums, 6);
+Arrays.equals(nums, copy);          // 내용 비교
 int sum = Arrays.stream(nums).sum();
-int max = Arrays.stream(nums).max().getAsInt();
 
-// 내림차순은 Integer[] 로 해야 함 (int[] 불가)
 Integer[] boxed = {5, 2, 9, 1};
-Arrays.sort(boxed, Collections.reverseOrder());   // [9, 5, 2, 1]
+Arrays.sort(boxed, Collections.reverseOrder());   // 내림차순은 Integer[]만 가능
 
-// 배열 → 리스트
-List&lt;String&gt; names = Arrays.asList("kim", "lee");</code></pre>
+List&lt;String&gt; names = Arrays.asList("kim", "lee"); // 배열 → 리스트 (크기 고정)</code></pre>
   </article>
 
   <article class="topic" id="c-wrapper">
-    <h3><span class="num">06</span>래퍼 클래스 <span class="api">Integer · Long · Double · Character</span></h3>
-    <p>기본 타입을 객체로 감싼 클래스입니다. <b>컬렉션(List, Map)에는 기본 타입을 못 넣기 때문에</b> <code>List&lt;int&gt;</code>가 아니라 <code>List&lt;Integer&gt;</code>로 씁니다. 자바가 자동으로 바꿔 줍니다(오토박싱).</p>
+    <h3><span class="num">2.6</span>래퍼 클래스 <span class="api">Integer · Long · Double · Boolean</span></h3>
+    <p>기본 타입을 객체로 감싼 클래스입니다. <b>컬렉션과 제네릭에는 기본 타입을 못 넣으므로</b> <code>List&lt;Integer&gt;</code>처럼 씁니다. 자바가 자동으로 변환해 줍니다(오토박싱).</p>
 <pre><code class="language-java">Integer boxed = 10;          // int → Integer 자동 (오토박싱)
 int raw = boxed;             // Integer → int 자동 (언박싱)
 
 Integer.parseInt("42");      // 문자열 → int
 Integer.valueOf("42");       // 문자열 → Integer
 Integer.MAX_VALUE;           // 2147483647
-Integer.MIN_VALUE;           // -2147483648
-Integer.toBinaryString(10);  // "1010"
 
 Character.isDigit('7');      // true
 Character.isLetter('a');     // true
-Character.isUpperCase('A');  // true
-Character.toUpperCase('a');  // 'A'
 
-// null 가능: 기본 타입 int는 null이 안 되지만 Integer는 됨
-Integer maybe = null;        // DB에서 값이 없을 때 등
-// int bad = maybe;          // NullPointerException!</code></pre>
-    <p class="warn"><b>Integer 비교 함정</b> · <code>Integer a = 127, b = 127;</code>이면 <code>a == b</code>는 true지만, 128부터는 false입니다. 객체끼리 <code>==</code>는 주소 비교라서 그렇습니다. 래퍼 클래스도 <code>equals()</code>로 비교하세요.</p>
+Integer maybe = null;        // 래퍼는 null 가능
+int bad = maybe;             // NullPointerException! (null 을 언박싱)</code></pre>
+    <p class="warn"><b>래퍼끼리 == 금지</b> · <code>Integer a = 127, b = 127;</code>이면 <code>a == b</code>는 true, 128부터는 false입니다. <code>Long</code> id 비교도 마찬가지라 서버 코드에서 실제로 버그가 납니다. <code>a.equals(b)</code> 또는 <code>Objects.equals(a, b)</code>로 비교하세요.</p>
   </article>
 
   <article class="topic" id="c-collections">
-    <h3><span class="num">07</span>ArrayList · HashMap · HashSet <span class="api">java.util</span></h3>
-    <p>크기가 자동으로 늘어나는 자료구조입니다. 실무 코드의 데이터는 거의 이 셋에 담깁니다. 변수 타입은 인터페이스(<code>List</code>, <code>Map</code>, <code>Set</code>)로, 생성은 구현체로 하는 게 관례입니다.</p>
-    <h4>ArrayList: 순서 있는 목록</h4>
+    <h3><span class="num">2.7</span>컬렉션 <span class="api">List · Map · Set</span></h3>
+    <p>변수 타입은 인터페이스(<code>List</code>, <code>Map</code>, <code>Set</code>)로, 생성은 구현체(<code>ArrayList</code>…)로 하는 게 관례입니다.</p>
+    <h4>List: 순서 있는 목록</h4>
 <pre><code class="language-java">List&lt;String&gt; list = new ArrayList&lt;&gt;();
 list.add("kim");               // 끝에 추가
-list.add("lee");
-list.add(0, "park");           // 0번 위치에 끼워넣기 → [park, kim, lee]
+list.add(0, "park");           // 0번 위치에 끼워넣기
 list.get(1);                   // "kim"
-list.set(1, "choi");           // 1번 값 바꾸기
-list.size();                   // 3   (배열은 length, 리스트는 size())
-list.contains("lee");          // true
-list.indexOf("lee");           // 2
-list.remove("lee");            // 값으로 삭제
-list.remove(0);                // 인덱스로 삭제
-list.isEmpty();                // false
-Collections.sort(list);        // 정렬 (list.sort(null) 도 같음)
+list.set(1, "choi");           // 값 바꾸기
+list.size();                   // 2
+list.contains("park");         // true
+list.remove("park");           // 값으로 삭제
+list.isEmpty();
+list.sort(Comparator.naturalOrder());   // 정렬
+list.removeIf(s -&gt; s.isBlank());         // 조건으로 삭제
 
-for (String name : list) {
-    System.out.println(name);
-}
-
-List&lt;Integer&gt; fixed = List.of(1, 2, 3);  // 수정 불가 리스트 (add 하면 예외)</code></pre>
-    <h4>HashMap: 키 → 값</h4>
+List&lt;Integer&gt; fixed = List.of(1, 2, 3); // 수정 불가 (add 하면 UnsupportedOperationException)</code></pre>
+    <h4>Map: 키 → 값</h4>
 <pre><code class="language-java">Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();
-scores.put("kim", 90);         // 넣기 (같은 키면 덮어씀)
-scores.put("lee", 80);
-scores.get("kim");             // 90
-scores.get("none");            // null  ← 없는 키
-scores.getOrDefault("none", 0);   // 0  ← 없으면 기본값
-scores.containsKey("lee");     // true
-scores.remove("lee");
-scores.size();                 // 1
+scores.put("kim", 90);             // 넣기 (같은 키면 덮어씀)
+scores.get("kim");                 // 90
+scores.get("none");                // null  ← 없는 키
+scores.getOrDefault("none", 0);    // 0
+scores.containsKey("kim");         // true
+scores.remove("kim");
+scores.putIfAbsent("lee", 80);     // 없을 때만 넣기
+scores.merge("lee", 1, Integer::sum);   // 개수 세기: 있으면 +1, 없으면 1
 
-// 전체 순회
 for (Map.Entry&lt;String, Integer&gt; e : scores.entrySet()) {
     System.out.println(e.getKey() + " = " + e.getValue());
 }
-
-// 개수 세기 (단어 빈도 등)
-Map&lt;String, Integer&gt; count = new HashMap&lt;&gt;();
-for (String w : "a b a c a".split(" ")) {
-    count.put(w, count.getOrDefault(w, 0) + 1);   // {a=3, b=1, c=1}
-}</code></pre>
-    <h4>HashSet: 중복 없는 모음</h4>
+scores.forEach((k, v) -&gt; System.out.println(k + "=" + v));</code></pre>
+    <h4>Set: 중복 없는 모음</h4>
 <pre><code class="language-java">Set&lt;String&gt; set = new HashSet&lt;&gt;();
 set.add("kim");
-set.add("kim");                // 중복은 무시
-set.size();                    // 1
-set.contains("kim");           // true  (List보다 훨씬 빠름)
-
-// 리스트 중복 제거
-List&lt;Integer&gt; unique = new ArrayList&lt;&gt;(new HashSet&lt;&gt;(List.of(3, 1, 3, 2)));</code></pre>
+set.add("kim");                // 중복은 무시 → size() == 1
+set.contains("kim");           // true (List보다 훨씬 빠름)</code></pre>
     <div class="table-wrap"><table>
       <thead><tr><th>상황</th><th>고를 것</th></tr></thead>
       <tbody>
         <tr><td>순서대로 쌓고 인덱스로 꺼냄</td><td><code>ArrayList</code></td></tr>
-        <tr><td>이름(키)으로 값을 찾음</td><td><code>HashMap</code></td></tr>
+        <tr><td>키로 값을 찾음</td><td><code>HashMap</code></td></tr>
         <tr><td>있는지 없는지만 중요, 중복 제거</td><td><code>HashSet</code></td></tr>
-        <tr><td>키 순서대로 정렬된 Map / Set</td><td><code>TreeMap</code> / <code>TreeSet</code></td></tr>
-        <tr><td>넣은 순서 유지하는 Map</td><td><code>LinkedHashMap</code></td></tr>
-        <tr><td>큐(먼저 넣은 것 먼저) · 스택</td><td><code>ArrayDeque</code> (<code>offer/poll</code>, <code>push/pop</code>)</td></tr>
+        <tr><td>키 순서대로 정렬</td><td><code>TreeMap</code> / <code>TreeSet</code></td></tr>
+        <tr><td>넣은 순서 유지</td><td><code>LinkedHashMap</code> / <code>LinkedHashSet</code></td></tr>
+        <tr><td>큐 · 스택</td><td><code>ArrayDeque</code> (<code>offer/poll</code>, <code>push/pop</code>)</td></tr>
+        <tr><td>여러 스레드가 동시에 접근</td><td><code>ConcurrentHashMap</code></td></tr>
       </tbody>
     </table></div>
   </article>
 
   <article class="topic" id="c-time">
-    <h3><span class="num">08</span>날짜와 시간 <span class="api">java.time</span></h3>
-<pre><code class="language-java">import java.time.*;
-import java.time.format.DateTimeFormatter;
-
-LocalDate today = LocalDate.now();             // 2026-10-04
-LocalDateTime now = LocalDateTime.now();       // 2026-10-04T14:30:12.345
+    <h3><span class="num">2.8</span>날짜와 시간 <span class="api">java.time</span></h3>
+<pre><code class="language-java">LocalDate today = LocalDate.now();             // 2026-10-04
+LocalDateTime now = LocalDateTime.now();       // 2026-10-04T14:30:12
 LocalDate birthday = LocalDate.of(2000, 5, 17);
 
 today.plusDays(7);                 // 일주일 뒤
-today.getYear();                   // 2026
-today.getDayOfWeek();              // SUNDAY
+today.minusMonths(1);              // 한 달 전
 today.isAfter(birthday);           // true
+ChronoUnit.DAYS.between(birthday, today);      // 두 날짜 사이 일수
+Duration.between(start, end).toMillis();       // 두 시각 사이 시간
 
 String text = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-LocalDate parsed = LocalDate.parse("2026-12-25");
-
-long start = System.currentTimeMillis();   // 실행 시간 재기
-// ... 작업 ...
-long elapsed = System.currentTimeMillis() - start;</code></pre>
-    <p class="spring-note"><b>Spring 연결</b> · Entity의 생성일·수정일 필드는 보통 <code>LocalDateTime</code>입니다. 옛날 코드의 <code>Date</code>, <code>Calendar</code>는 쓰지 않습니다.</p>
+LocalDate parsed = LocalDate.parse("2026-12-25");</code></pre>
+    <p class="spring-note"><b>Spring에서는</b> · Entity의 생성일·수정일은 <code>LocalDateTime</code>입니다. 옛날 코드의 <code>Date</code>, <code>Calendar</code>는 쓰지 않습니다.</p>
   </article>
 
   <article class="topic" id="c-cheat">
-    <h3><span class="num">09</span>"이거 어떻게 하지?" 빠른 표</h3>
+    <h3><span class="num">2.9</span>"이거 어떻게 하지?" 빠른 표</h3>
     <div class="table-wrap"><table>
       <thead><tr><th>하고 싶은 것</th><th>코드</th></tr></thead>
       <tbody>
-        <tr><td>키보드로 숫자 입력</td><td><code>new Scanner(System.in).nextInt()</code></td></tr>
         <tr><td>문자열 → 숫자</td><td><code>Integer.parseInt(s)</code></td></tr>
         <tr><td>숫자 → 문자열</td><td><code>String.valueOf(n)</code></td></tr>
         <tr><td>배열 내용 출력</td><td><code>Arrays.toString(arr)</code></td></tr>
-        <tr><td>배열 정렬</td><td><code>Arrays.sort(arr)</code></td></tr>
-        <tr><td>리스트 정렬</td><td><code>Collections.sort(list)</code></td></tr>
-        <tr><td>리스트 내림차순</td><td><code>list.sort(Comparator.reverseOrder())</code></td></tr>
-        <tr><td>최댓값 · 최솟값</td><td><code>Math.max(a, b)</code>, <code>Collections.max(list)</code></td></tr>
+        <tr><td>리스트 정렬 / 내림차순</td><td><code>list.sort(Comparator.naturalOrder())</code> / <code>reverseOrder()</code></td></tr>
+        <tr><td>객체 리스트를 필드로 정렬</td><td><code>list.sort(Comparator.comparing(Member::getAge))</code></td></tr>
+        <tr><td>최댓값</td><td><code>Math.max(a, b)</code>, <code>Collections.max(list)</code></td></tr>
         <tr><td>문자열 뒤집기</td><td><code>new StringBuilder(s).reverse().toString()</code></td></tr>
-        <tr><td>문자열 쪼개기</td><td><code>s.split(" ")</code></td></tr>
-        <tr><td>문자열 비교</td><td><code>a.equals(b)</code></td></tr>
-        <tr><td>소수점 2자리 출력</td><td><code>System.out.printf("%.2f%n", x)</code></td></tr>
-        <tr><td>난수 1~100</td><td><code>new Random().nextInt(100) + 1</code></td></tr>
-        <tr><td>정수 최댓값</td><td><code>Integer.MAX_VALUE</code></td></tr>
-        <tr><td>오늘 날짜</td><td><code>LocalDate.now()</code></td></tr>
+        <tr><td>문자열 쪼개기 / 합치기</td><td><code>s.split(",")</code> / <code>String.join(",", list)</code></td></tr>
+        <tr><td>null 안전 비교</td><td><code>Objects.equals(a, b)</code></td></tr>
+        <tr><td>리스트 → 다른 타입 리스트</td><td><code>list.stream().map(X::from).toList()</code></td></tr>
+        <tr><td>없으면 예외</td><td><code>optional.orElseThrow(() -&gt; new ...)</code></td></tr>
+        <tr><td>랜덤 고유 ID</td><td><code>UUID.randomUUID().toString()</code></td></tr>
+        <tr><td>현재 시각</td><td><code>LocalDateTime.now()</code></td></tr>
       </tbody>
     </table></div>
   </article>
 </section>
 
 <!-- ====================================================== -->
-<section id="plan">
+<section id="oop">
   <div class="section-head">
-    <span class="eyebrow">Part 3 · 하루 완주</span>
-    <h2>하루 타임테이블</h2>
-    <p class="lead">약 11시간, 8개 블록. 각 블록 체크리스트를 끝내면 위 진행률이 올라갑니다.</p>
+    <span class="eyebrow">Part 3</span>
+    <h2>객체지향</h2>
+    <p class="lead">Spring의 Controller, Service, Repository, Entity, DTO는 전부 평범한 클래스입니다. 특히 <a href="#o-interface">인터페이스와 다형성</a>이 Spring DI의 기반입니다.</p>
   </div>
 
-  <div class="rules" id="p-rules">
-    <div class="rule"><b>읽지 말고 친다</b><p>예제는 복붙하지 말고 IntelliJ에 직접 타이핑합니다. 손이 기억해야 Spring 코드에서 패턴이 보입니다.</p></div>
-    <div class="rule"><b>블록당 25분 + 5분</b><p>개념 25분, 직접 작성 5분 이상. 막히면 10분 안에 답을 찾고 넘어갑니다.</p></div>
-    <div class="rule"><b>OOP에 시간을 몰아준다</b><p>문법은 빨리, 클래스·인터페이스·다형성은 천천히. Spring의 DI는 인터페이스와 다형성 위에 서 있습니다.</p></div>
-    <div class="rule"><b>한 줄 요약 노트</b><p>블록이 끝날 때마다 배운 것을 한 문장으로 적고, 밤 복습 때 이 노트만 다시 봅니다.</p></div>
-  </div>
-
-  <div class="timeline">
-
-    <div class="slot" id="p-0">
-      <div class="time">09:00<small>30분</small></div>
-      <div class="block">
-        <h3>0. 환경 세팅</h3>
-        <p class="goal">코드를 실행할 수 있는 상태 만들기. 여기서 시간 끌지 않습니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-0-1"><span>JDK 21 설치 (<code>java -version</code>으로 확인)</span></label></li>
-          <li><label><input type="checkbox" id="c-0-2"><span>IntelliJ IDEA Community 설치 후 새 Java 프로젝트 생성</span></label></li>
-          <li><label><input type="checkbox" id="c-0-3"><span><code>main</code> 메서드로 Hello World 실행 (<a href="#b-structure">01 프로그램 구조</a>)</span></label></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="slot" id="p-1">
-      <div class="time">09:30<small>90분</small></div>
-      <div class="block">
-        <h3>1. 기본 문법</h3>
-        <p class="goal">위 <a href="#basics">Part 1 기본 문법</a>과 <a href="#c-scanner">Scanner</a>를 교재로 씁니다. 다른 언어와 비슷한 부분은 빠르게, 자바만의 차이점에 집중합니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-1-1"><span>기본 타입 <code>int long double boolean char</code>와 참조 타입 <code>String</code>의 차이</span></label></li>
-          <li><label><input type="checkbox" id="c-1-2"><span><code>var</code> 타입 추론, 형변환 <code>(int) 3.7</code>, <code>Integer.parseInt</code></span></label></li>
-          <li><label><input type="checkbox" id="c-1-3"><span><code>if / switch</code>(화살표 문법 포함), <code>for / 향상된 for / while</code></span></label></li>
-          <li><label><input type="checkbox" id="c-1-4"><span>배열 <code>int[] arr = new int[5]</code>, <code>Arrays.toString</code></span></label></li>
-          <li><label><input type="checkbox" id="c-1-5"><span>문자열 비교는 <code>==</code>가 아니라 <code>equals()</code> (가장 흔한 실수)</span></label></li>
-          <li><label><input type="checkbox" id="c-1-6"><span>Scanner로 숫자 두 개 입력받아 사칙연산 결과 출력하기</span></label></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="slot" id="p-2">
-      <div class="time">11:00<small>90분</small></div>
-      <div class="block">
-        <h3>2. 클래스와 객체</h3>
-        <p class="goal">자바의 모든 코드는 클래스 안에 있습니다. 객체를 만들고 쓰는 흐름을 손에 익힙니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-2-1"><span>클래스 = 설계도, 객체 = <code>new</code>로 만든 실체</span></label></li>
-          <li><label><input type="checkbox" id="c-2-2"><span>필드, 메서드, 생성자, <code>this</code></span></label></li>
-          <li><label><input type="checkbox" id="c-2-3"><span>접근제어자 <code>private / public / protected / default</code></span></label></li>
-          <li><label><input type="checkbox" id="c-2-4"><span><code>static</code>: 객체가 아니라 클래스에 붙는 것</span></label></li>
-          <li><label><input type="checkbox" id="c-2-5"><span>패키지와 <code>import</code>, 캡슐화(getter / setter)</span></label></li>
-        </ul>
+  <article class="topic" id="o-class">
+    <h3><span class="num">3.1</span>클래스와 객체 <span class="api">필드 · 생성자 · this</span></h3>
+    <p>클래스는 설계도, 객체(인스턴스)는 <code>new</code>로 만든 실체입니다. 생성자는 객체를 만들 때 한 번 실행되어 필드를 초기화합니다.</p>
 <pre><code class="language-java">public class Member {
+    // 필드: 객체가 가진 데이터
     private Long id;
     private String name;
+    private int age;
 
-    public Member(String name) { this.name = name; }
+    // 생성자: 클래스 이름과 같고 반환 타입 없음
+    public Member(String name, int age) {
+        this.name = name;      // this.name = 필드, name = 매개변수
+        this.age = age;
+    }
 
+    // 생성자 오버로딩 + 다른 생성자 호출
+    public Member(String name) {
+        this(name, 0);
+    }
+
+    // 메서드: 객체가 하는 일
+    public boolean isAdult() {
+        return age &gt;= 20;
+    }
+
+    // getter / setter
     public String getName() { return name; }
     public void setId(Long id) { this.id = id; }
 }
 
-// 사용
-Member m = new Member("kim");   // 객체 생성
-m.setId(1L);                     // 객체.메서드()
-System.out.println(m.getName());</code></pre>
-        <p class="spring-note"><b>Spring 연결</b> · 이 Member 같은 클래스가 그대로 Entity와 DTO가 됩니다.</p>
-      </div>
-    </div>
+Member m = new Member("kim", 25);   // 객체 생성
+m.isAdult();                         // true
+m.getName();                         // "kim"
 
-    <div class="slot">
-      <div class="time">12:30<small>60분</small></div>
-      <div class="block break"><h3>점심 · 오전 한 줄 요약 2개 적기</h3></div>
-    </div>
+Member other = m;                    // 객체 복사가 아니라 '주소' 복사
+other.setId(1L);                     // m 도 같은 객체라서 id 가 1</code></pre>
+    <p class="tip"><b>기본 생성자</b> · 생성자를 하나도 안 만들면 자바가 <code>public Member() {}</code>를 자동으로 넣어 줍니다. 하나라도 만들면 자동 생성되지 않습니다. JPA Entity는 기본 생성자가 꼭 필요합니다.</p>
+  </article>
 
-    <div class="slot" id="p-3">
-      <div class="time">13:30<small>120분</small></div>
-      <div class="block">
-        <h3>3. 객체지향 핵심 <span class="tag">가장 중요</span></h3>
-        <p class="goal">오늘 가장 많은 시간을 씁니다. "인터페이스 타입으로 받고 구현체를 바꿔 끼운다"를 이해하면 Spring의 절반을 이해한 겁니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-3-1"><span>상속 <code>extends</code>, 메서드 오버라이딩 <code>@Override</code></span></label></li>
-          <li><label><input type="checkbox" id="c-3-2"><span>추상 클래스 <code>abstract</code></span></label></li>
-          <li><label><input type="checkbox" id="c-3-3"><span>인터페이스 <code>interface / implements</code></span></label></li>
-          <li><label><input type="checkbox" id="c-3-4"><span>다형성: 부모(인터페이스) 타입 변수에 자식 객체 담기</span></label></li>
-          <li><label><input type="checkbox" id="c-3-5"><span>오버로딩과 오버라이딩의 차이 설명해보기</span></label></li>
-        </ul>
+  <article class="topic" id="o-access">
+    <h3><span class="num">3.2</span>접근제어자 · static · final</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>접근제어자</th><th>접근 가능 범위</th><th>주로 쓰는 곳</th></tr></thead>
+      <tbody>
+        <tr><td><code>public</code></td><td>어디서나</td><td>클래스, 외부에 공개할 메서드</td></tr>
+        <tr><td><code>protected</code></td><td>같은 패키지 + 자식 클래스</td><td>상속용 메서드, JPA 기본 생성자</td></tr>
+        <tr><td>(생략, default)</td><td>같은 패키지</td><td>테스트용, 패키지 내부 전용</td></tr>
+        <tr><td><code>private</code></td><td>같은 클래스 안</td><td><b>필드는 기본적으로 private</b></td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-java">public class Counter {
+    private static int total = 0;   // static 필드: 모든 객체가 공유 (클래스에 1개)
+    private int mine = 0;           // 일반 필드: 객체마다 따로
+
+    public static final int MAX = 100;  // 상수: static final + 대문자
+
+    public void increase() {
+        total++;
+        mine++;
+    }
+
+    public static int getTotal() {  // static 메서드: 객체 없이 Counter.getTotal()
+        return total;               // static 안에서는 mine(일반 필드) 사용 불가
+    }
+}</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>final 위치</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td>변수 · 필드</td><td>한 번만 대입 가능. <b>생성자 주입 필드에 붙임</b></td></tr>
+        <tr><td>메서드</td><td>자식이 오버라이딩 못 함</td></tr>
+        <tr><td>클래스</td><td>상속 못 함 (예: <code>String</code>)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="warn"><b>final 은 내용 불변이 아님</b> · <code>final List&lt;String&gt; list</code>는 다른 리스트를 대입할 수 없을 뿐, <code>list.add()</code>는 됩니다.</p>
+  </article>
+
+  <article class="topic" id="o-inherit">
+    <h3><span class="num">3.3</span>상속과 오버라이딩 <span class="api">extends · super · @Override</span></h3>
+<pre><code class="language-java">public class Animal {
+    protected String name;
+
+    public Animal(String name) { this.name = name; }
+
+    public String sound() { return "..."; }
+    public String introduce() { return name + ": " + sound(); }
+}
+
+public class Dog extends Animal {       // 자바는 클래스 하나만 상속 가능
+    public Dog(String name) {
+        super(name);                    // 부모 생성자 호출 (첫 줄)
+    }
+
+    @Override                           // 부모 메서드를 재정의
+    public String sound() { return "멍멍"; }
+}
+
+Animal a = new Dog("바둑이");
+a.introduce();                          // "바둑이: 멍멍" ← 실제 객체(Dog)의 메서드가 실행됨</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>오버로딩 (Overloading)</th><th>오버라이딩 (Overriding)</th></tr></thead>
+      <tbody>
+        <tr><td>뜻</td><td>같은 이름, 다른 매개변수로 여러 개 정의</td><td>부모 메서드를 자식이 다시 정의</td></tr>
+        <tr><td>위치</td><td>같은 클래스 안</td><td>부모-자식 사이</td></tr>
+        <tr><td>예</td><td><code>add(int, int)</code>, <code>add(double, double)</code></td><td><code>Dog.sound()</code>가 <code>Animal.sound()</code>를 대체</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tip"><b>@Override 는 꼭 붙이기</b> · 메서드 이름 오타가 나면 컴파일러가 바로 알려 줍니다. 안 붙이면 오타 난 새 메서드가 조용히 생깁니다.</p>
+  </article>
+
+  <article class="topic" id="o-abstract">
+    <h3><span class="num">3.4</span>추상 클래스 <span class="api">abstract</span></h3>
+    <p>공통 코드는 부모에 두고, 자식마다 달라지는 부분만 <b>구현을 강제</b>할 때 씁니다. 추상 클래스는 직접 <code>new</code> 할 수 없습니다.</p>
+<pre><code class="language-java">public abstract class Notification {
+    public void send(String to) {                 // 공통 흐름
+        String message = createMessage();
+        System.out.println(to + " ← " + message);
+    }
+    protected abstract String createMessage();    // 자식이 반드시 구현
+}
+
+public class WelcomeNotification extends Notification {
+    @Override
+    protected String createMessage() { return "가입을 환영합니다"; }
+}
+
+// new Notification();  // 컴파일 에러
+new WelcomeNotification().send("kim");</code></pre>
+  </article>
+
+  <article class="topic" id="o-interface">
+    <h3><span class="num">3.5</span>인터페이스와 다형성 <span class="api">interface · implements</span></h3>
+    <p>인터페이스는 "무엇을 할 수 있는지"만 정한 약속입니다. <b>변수 타입은 인터페이스로, 실제 객체는 구현체로</b> 두면 구현체를 바꿔 끼워도 사용하는 코드는 그대로입니다. 이것이 다형성이고, Spring DI의 기반입니다.</p>
 <pre><code class="language-java">public interface DiscountPolicy {
-    int discount(int price);
+    int discount(int price);                      // 구현 없이 선언만
+
+    default boolean isFree(int price) {           // default 메서드: 기본 구현 제공 가능
+        return discount(price) &gt;= price;
+    }
 }
 
 public class FixDiscountPolicy implements DiscountPolicy {
@@ -1038,208 +974,502 @@ public class RateDiscountPolicy implements DiscountPolicy {
     public int discount(int price) { return price / 10; }
 }
 
-DiscountPolicy policy = new RateDiscountPolicy();  // 구현체만 바꿔 끼움</code></pre>
-        <p class="spring-note"><b>Spring 연결</b> · Spring은 이 <code>new RateDiscountPolicy()</code>를 대신 해주는 프레임워크입니다. 그게 DI(의존성 주입)입니다.</p>
-      </div>
-    </div>
+public class OrderService {
+    private final DiscountPolicy policy;          // 구현체가 뭔지 모름
 
-    <div class="slot" id="p-4">
-      <div class="time">15:30<small>90분</small></div>
-      <div class="block">
-        <h3>4. 컬렉션과 제네릭</h3>
-        <p class="goal">실무 데이터는 거의 전부 List와 Map에 담깁니다. 메서드 목록은 <a href="#c-collections">Part 2의 컬렉션</a>을 보세요.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-4-1"><span><code>List / ArrayList</code>: 추가, 조회, 순회</span></label></li>
-          <li><label><input type="checkbox" id="c-4-2"><span><code>Map / HashMap</code>: put, get, containsKey</span></label></li>
-          <li><label><input type="checkbox" id="c-4-3"><span><code>Set / HashSet</code>: 중복 제거</span></label></li>
-          <li><label><input type="checkbox" id="c-4-4"><span>제네릭 <code>&lt;T&gt;</code>, 래퍼 클래스 <code>Integer / Long</code></span></label></li>
-          <li><label><input type="checkbox" id="c-4-5"><span><code>Optional</code>: null 대신 "없을 수도 있음"을 표현</span></label></li>
-        </ul>
-<pre><code class="language-java">Map&lt;Long, Member&gt; store = new HashMap&lt;&gt;();
-store.put(1L, new Member("kim"));
+    public OrderService(DiscountPolicy policy) {  // 밖에서 넣어줌
+        this.policy = policy;
+    }
 
-Optional&lt;Member&gt; found = Optional.ofNullable(store.get(2L));
-String name = found.map(Member::getName).orElse("없음");</code></pre>
-        <p class="spring-note"><b>Spring 연결</b> · Spring Data JPA의 <code>findById()</code>는 <code>Optional</code>을 돌려줍니다.</p>
-      </div>
-    </div>
-
-    <div class="slot" id="p-5">
-      <div class="time">17:00<small>75분</small></div>
-      <div class="block">
-        <h3>5. 예외 처리 · 람다 · Stream</h3>
-        <p class="goal">Spring 코드에서 자주 보이는 짧은 문법을 읽을 수 있게 만듭니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-5-1"><span><code>try / catch / finally</code>, <code>throw new IllegalStateException(...)</code></span></label></li>
-          <li><label><input type="checkbox" id="c-5-2"><span>Checked와 Unchecked(RuntimeException) 예외 차이</span></label></li>
-          <li><label><input type="checkbox" id="c-5-3"><span>람다 <code>x -&gt; x * 2</code>, 메서드 참조 <code>Member::getName</code></span></label></li>
-          <li><label><input type="checkbox" id="c-5-4"><span>Stream <code>filter / map / toList()</code></span></label></li>
-        </ul>
-<pre><code class="language-java">try {
-    int n = Integer.parseInt("abc");
-} catch (NumberFormatException e) {
-    System.out.println("숫자가 아닙니다: " + e.getMessage());
-} finally {
-    System.out.println("항상 실행");
+    public int pay(int price) {
+        return price - policy.discount(price);
+    }
 }
 
-List&lt;String&gt; names = members.stream()
-        .filter(m -&gt; m.getName().startsWith("k"))
-        .map(Member::getName)
-        .toList();
+new OrderService(new FixDiscountPolicy()).pay(10000);   // 9000
+new OrderService(new RateDiscountPolicy()).pay(20000);  // 18000 → 구현만 바뀌고 OrderService 코드는 그대로
 
-if (exists) {
-    throw new IllegalStateException("이미 존재하는 회원입니다.");
+// 타입 확인 + 꺼내기 (Java 16+ 패턴 매칭)
+if (policy instanceof RateDiscountPolicy rate) {
+    // rate 를 RateDiscountPolicy 타입으로 바로 사용
 }</code></pre>
-      </div>
-    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>추상 클래스</th><th>인터페이스</th></tr></thead>
+      <tbody>
+        <tr><td>상속 개수</td><td>하나만 <code>extends</code></td><td>여러 개 <code>implements</code> 가능</td></tr>
+        <tr><td>필드</td><td>일반 필드 가능</td><td>상수(<code>static final</code>)만</td></tr>
+        <tr><td>목적</td><td>공통 코드 재사용</td><td>역할(약속) 정의, 구현 교체</td></tr>
+        <tr><td>서버 코드에서</td><td>가끔 (BaseEntity 등)</td><td><b>아주 많이</b> (Repository, Service 계약)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="spring-note"><b>Spring에서는</b> · <code>new FixDiscountPolicy()</code>를 직접 쓰지 않고 Spring이 알맞은 구현체를 생성자에 넣어 줍니다. 이게 <a href="#s-di">DI(의존성 주입)</a>입니다.</p>
+  </article>
 
-    <div class="slot">
-      <div class="time">18:15<small>45분</small></div>
-      <div class="block break"><h3>저녁 · 오후 한 줄 요약 3개 적기</h3></div>
-    </div>
+  <article class="topic" id="o-object">
+    <h3><span class="num">3.6</span>Object 메서드 <span class="api">toString · equals · hashCode</span></h3>
+    <p>모든 클래스는 <code>Object</code>를 상속합니다. 아래 세 메서드는 필요하면 직접 재정의합니다.</p>
+<pre><code class="language-java">public class Point {
+    private final int x;
+    private final int y;
 
-    <div class="slot" id="p-6">
-      <div class="time">19:00<small>75분</small></div>
-      <div class="block">
-        <h3>6. Spring 직전 개념</h3>
-        <p class="goal">Spring 문서를 열면 바로 마주치는 것들입니다. "이게 뭔지 안다" 수준이 목표입니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-6-1"><span>어노테이션 <code>@</code>: 코드에 붙이는 메타 정보 (Spring은 이걸 읽고 동작함)</span></label></li>
-          <li><label><input type="checkbox" id="c-6-2"><span>IoC / DI 개념: 객체 생성을 내가 아니라 외부가 담당</span></label></li>
-          <li><label><input type="checkbox" id="c-6-3"><span>생성자 주입 패턴 + <code>final</code> 필드</span></label></li>
-          <li><label><input type="checkbox" id="c-6-4"><span><code>record</code>, Lombok(<code>@Getter</code>, <code>@RequiredArgsConstructor</code>)이 무엇을 줄여주는지</span></label></li>
-          <li><label><input type="checkbox" id="c-6-5"><span>Gradle: <code>build.gradle</code>에 라이브러리를 적으면 받아오는 빌드 도구</span></label></li>
-        </ul>
-<pre><code class="language-java">public class MemberService {
-    private final MemberRepository repository;
+    public Point(int x, int y) { this.x = x; this.y = y; }
 
-    // 무엇을 쓸지는 밖에서 넣어준다 = 생성자 주입
-    public MemberService(MemberRepository repository) {
-        this.repository = repository;
+    @Override
+    public String toString() {                // println 했을 때 보이는 문자열
+        return "Point(" + x + ", " + y + ")";
     }
-}</code></pre>
-        <p class="spring-note"><b>Spring 연결</b> · 여기에 <code>@Service</code>만 붙이면 Spring이 생성자에 알맞은 객체를 자동으로 넣어줍니다.</p>
-      </div>
-    </div>
 
-    <div class="slot" id="p-7">
-      <div class="time">20:15<small>90분</small></div>
-      <div class="block">
-        <h3>7. 미니 프로젝트: 순수 자바 회원 관리</h3>
-        <p class="goal">Spring 없이 Spring 구조를 직접 만들어 봅니다. Scanner 메뉴(<a href="#c-scanner">패턴 참고</a>)로 콘솔에서 가입·조회해 보면 더 좋습니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-7-1"><span><code>Member</code> 클래스 (id, name)</span></label></li>
-          <li><label><input type="checkbox" id="c-7-2"><span><code>MemberRepository</code> 인터페이스: save, findById, findAll</span></label></li>
-          <li><label><input type="checkbox" id="c-7-3"><span><code>MemoryMemberRepository</code>: HashMap으로 구현</span></label></li>
-          <li><label><input type="checkbox" id="c-7-4"><span><code>MemberService</code>: 중복 이름 가입 시 예외 발생</span></label></li>
-          <li><label><input type="checkbox" id="c-7-5"><span><code>main</code>에서 직접 조립(수동 DI)하고 실행</span></label></li>
-        </ul>
-<pre><code class="language-plaintext">member/
-├── Member.java
-├── MemberRepository.java        // interface
-├── MemoryMemberRepository.java  // HashMap 구현체
-├── MemberService.java           // 생성자 주입
-└── Main.java                    // new 로 직접 조립</code></pre>
-<pre><code class="language-java">// Main.java
-MemberRepository repo = new MemoryMemberRepository();
-MemberService service = new MemberService(repo);
-service.join(new Member("kim"));</code></pre>
-      </div>
-    </div>
+    @Override
+    public boolean equals(Object o) {         // 값이 같으면 같은 객체로 취급
+        if (this == o) return true;
+        if (!(o instanceof Point p)) return false;
+        return x == p.x &amp;&amp; y == p.y;
+    }
 
-    <div class="slot" id="p-8">
-      <div class="time">21:45<small>30분</small></div>
-      <div class="block">
-        <h3>8. 복습과 셀프 테스트</h3>
-        <p class="goal">한 줄 요약 노트를 다시 읽고, 아래 질문에 소리 내서 답해 봅니다. 시간이 남으면 <a href="#spring-lab">Spring 첫 실습</a>으로 넘어갑니다.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" id="c-8-1"><span><code>==</code>와 <code>equals()</code>는 언제 결과가 다른가?</span></label></li>
-          <li><label><input type="checkbox" id="c-8-2"><span>인터페이스를 쓰면 무엇이 좋은가? 예시로 설명</span></label></li>
-          <li><label><input type="checkbox" id="c-8-3"><span><code>static</code> 메서드와 일반 메서드의 차이</span></label></li>
-          <li><label><input type="checkbox" id="c-8-4"><span>왜 필드에 <code>private final</code>을 붙이고 생성자로 받는가?</span></label></li>
-          <li><label><input type="checkbox" id="c-8-5"><span>DI를 Spring 없이 한 문장으로 설명</span></label></li>
-        </ul>
-      </div>
-    </div>
+    @Override
+    public int hashCode() {                   // equals 를 바꾸면 반드시 함께
+        return Objects.hash(x, y);
+    }
+}
 
-  </div>
-  <button class="reset" id="reset" type="button">체크 모두 해제</button>
+new Point(1, 2).equals(new Point(1, 2));  // true
+Set&lt;Point&gt; set = new HashSet&lt;&gt;(List.of(new Point(1, 2), new Point(1, 2)));
+set.size();                                // 1 (hashCode 까지 재정의했기 때문)</code></pre>
+    <p class="warn"><b>equals 만 재정의하면</b> · HashSet, HashMap의 키로 쓸 때 같은 값이 중복으로 들어갑니다. equals와 hashCode는 항상 세트로 재정의하세요. <a href="#m-record">record</a>나 Lombok을 쓰면 자동으로 만들어 줍니다.</p>
+  </article>
+
+  <article class="topic" id="o-package">
+    <h3><span class="num">3.7</span>패키지와 import</h3>
+<pre><code class="language-java">// 파일 위치: src/main/java/com/example/hello/service/MemberService.java
+package com.example.hello.service;           // 첫 줄. 폴더 경로와 일치해야 함
+
+import com.example.hello.domain.Member;      // 다른 패키지의 클래스 가져오기
+import java.util.List;
+import java.util.*;                          // 패키지 전체 (IntelliJ는 보통 하나씩 정리)
+import static org.assertj.core.api.Assertions.assertThat;  // static 메서드를 이름만으로 쓰기</code></pre>
+    <p class="spring-note"><b>Spring에서는</b> · <code>@SpringBootApplication</code> 클래스가 있는 패키지와 <b>그 하위 패키지</b>만 자동으로 스캔합니다. 바깥 패키지에 둔 클래스는 빈으로 등록되지 않습니다.</p>
+  </article>
 </section>
 
 <!-- ====================================================== -->
-<section id="spring-lab">
+<section id="server">
   <div class="section-head">
-    <span class="eyebrow">Part 4 · 보너스</span>
-    <h2>Spring 첫 실습: Controller · Service · Repository</h2>
-    <p class="lead">블록 7에서 순수 자바로 만든 회원 관리를 Spring Boot로 옮깁니다. DB 없이 메모리(HashMap)에 저장하므로 설치할 것이 없고, 약 60분 걸립니다.</p>
+    <span class="eyebrow">Part 4</span>
+    <h2>서버 코드 필수 문법</h2>
+    <p class="lead">Spring 코드를 열면 거의 모든 파일에서 보이는 문법입니다. 처음 봤을 때 낯선 기호(<code>&lt;T&gt;</code>, <code>-&gt;</code>, <code>::</code>, <code>@</code>)는 대부분 여기에 있습니다.</p>
   </div>
 
-  <article class="topic" id="s-flow">
-    <h3>요청이 지나가는 길</h3>
+  <article class="topic" id="m-generic">
+    <h3><span class="num">4.1</span>제네릭 <span class="api">&lt;T&gt;</span></h3>
+    <p>타입을 나중에 정하는 문법입니다. <code>List&lt;String&gt;</code>은 "String만 담는 List"라는 뜻이고, 잘못된 타입을 넣으면 컴파일 단계에서 막힙니다.</p>
+<pre><code class="language-java">// 제네릭 클래스: 서버 공통 응답 형태
+public class ApiResponse&lt;T&gt; {
+    private final boolean success;
+    private final T data;                         // T 자리에 실제 타입이 들어감
+
+    private ApiResponse(boolean success, T data) {
+        this.success = success;
+        this.data = data;
+    }
+
+    public static &lt;T&gt; ApiResponse&lt;T&gt; ok(T data) { // 제네릭 메서드
+        return new ApiResponse&lt;&gt;(true, data);
+    }
+
+    public T getData() { return data; }
+}
+
+ApiResponse&lt;MemberResponse&gt; res = ApiResponse.ok(memberResponse);
+ApiResponse&lt;List&lt;String&gt;&gt; names = ApiResponse.ok(List.of("kim", "lee"));
+
+// 타입 제한: Number 의 자식만 허용
+public static &lt;T extends Number&gt; double sum(List&lt;T&gt; nums) {
+    return nums.stream().mapToDouble(Number::doubleValue).sum();
+}
+
+// 와일드카드: 읽기만 할 때 "아무 타입이나"
+public void printAll(List&lt;?&gt; items) { items.forEach(System.out::println); }</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>관례 이름</th><th>뜻</th><th>예</th></tr></thead>
+      <tbody>
+        <tr><td><code>T</code></td><td>Type</td><td><code>Optional&lt;T&gt;</code></td></tr>
+        <tr><td><code>E</code></td><td>Element</td><td><code>List&lt;E&gt;</code></td></tr>
+        <tr><td><code>K</code>, <code>V</code></td><td>Key, Value</td><td><code>Map&lt;K, V&gt;</code></td></tr>
+        <tr><td><code>ID</code></td><td>식별자 타입</td><td><code>JpaRepository&lt;Member, Long&gt;</code></td></tr>
+      </tbody>
+    </table></div>
+  </article>
+
+  <article class="topic" id="m-optional">
+    <h3><span class="num">4.2</span>Optional</h3>
+    <p>"값이 없을 수도 있음"을 타입으로 표현합니다. 메서드가 <code>null</code>을 돌려주는 대신 <code>Optional</code>을 돌려주면, 받는 쪽이 없는 경우를 처리하도록 강제됩니다.</p>
+<pre><code class="language-java">Optional&lt;Member&gt; a = Optional.of(member);          // 값이 확실히 있을 때 (null 이면 예외)
+Optional&lt;Member&gt; b = Optional.ofNullable(maybe);   // null 일 수도 있을 때
+Optional&lt;Member&gt; c = Optional.empty();             // 비어 있음
+
+// 꺼내기
+Member m1 = opt.orElseThrow(() -&gt; new MemberNotFoundException(id));  // ★ 서버 코드 단골
+Member m2 = opt.orElse(defaultMember);             // 없으면 기본값 (항상 기본값 객체를 만듦)
+Member m3 = opt.orElseGet(() -&gt; createGuest());    // 없을 때만 만듦
+
+// 있을 때만 실행
+opt.ifPresent(m -&gt; log.info("찾음: {}", m.getName()));
+opt.ifPresentOrElse(m -&gt; ..., () -&gt; ...);
+
+// 변환
+String name = opt.map(Member::getName).orElse("익명");
+boolean exists = opt.isPresent();                  // isEmpty() 도 있음</code></pre>
+    <p class="warn"><b>하지 말 것</b> · 확인 없이 <code>opt.get()</code> 호출(비어 있으면 예외), Optional을 필드나 메서드 매개변수로 쓰기. Optional은 <b>반환 타입</b>으로만 쓰는 게 관례입니다.</p>
+    <p class="spring-note"><b>Spring에서는</b> · Spring Data JPA의 <code>findById(id)</code>가 <code>Optional&lt;Entity&gt;</code>를 돌려줍니다. 보통 <code>.orElseThrow(...)</code>로 바로 꺼냅니다.</p>
+  </article>
+
+  <article class="topic" id="m-exception">
+    <h3><span class="num">4.3</span>예외 처리 <span class="api">try · catch · throw · 커스텀 예외</span></h3>
+<pre><code class="language-java">// 잡기
+try {
+    int n = Integer.parseInt(input);
+} catch (NumberFormatException e) {
+    System.out.println("숫자가 아님: " + e.getMessage());
+} catch (IllegalArgumentException | IllegalStateException e) {   // 여러 개 한 번에
+    ...
+} finally {
+    // 예외가 나든 안 나든 항상 실행 (자원 정리)
+}
+
+// try-with-resources: 괄호 안 자원을 자동으로 close
+try (BufferedReader br = new BufferedReader(new FileReader("a.txt"))) {
+    String line = br.readLine();
+} catch (IOException e) {
+    throw new UncheckedIOException(e);       // 체크 예외를 언체크로 감싸 다시 던지기
+}
+
+// 던지기
+if (name.isBlank()) {
+    throw new IllegalArgumentException("이름은 필수입니다.");
+}
+
+// 메서드가 체크 예외를 밖으로 넘길 때
+public String read(Path path) throws IOException { ... }</code></pre>
+    <h4>커스텀 예외 (서버에서 자주 만드는 형태)</h4>
+<pre><code class="language-java">public class MemberNotFoundException extends RuntimeException {
+    public MemberNotFoundException(Long id) {
+        super("회원을 찾을 수 없습니다. id=" + id);
+    }
+}
+
+// 사용
+Member member = memberRepository.findById(id)
+        .orElseThrow(() -&gt; new MemberNotFoundException(id));</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>종류</th><th>예</th><th>특징</th></tr></thead>
+      <tbody>
+        <tr><td>Checked</td><td><code>IOException</code>, <code>SQLException</code></td><td>try-catch 또는 <code>throws</code>가 <b>강제</b>됨</td></tr>
+        <tr><td>Unchecked (<code>RuntimeException</code>)</td><td><code>IllegalArgumentException</code>, <code>NullPointerException</code></td><td>처리 강제 없음. <b>서버 커스텀 예외는 보통 이쪽</b></td></tr>
+        <tr><td>Error</td><td><code>OutOfMemoryError</code></td><td>잡지 않음</td></tr>
+      </tbody>
+    </table></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>자주 쓰는 내장 예외</th><th>언제</th></tr></thead>
+      <tbody>
+        <tr><td><code>IllegalArgumentException</code></td><td>잘못된 인자가 들어왔을 때 (입력 검증 실패)</td></tr>
+        <tr><td><code>IllegalStateException</code></td><td>지금 상태에서 할 수 없는 동작 (이미 가입된 회원, 이미 취소된 주문)</td></tr>
+        <tr><td><code>NoSuchElementException</code></td><td>찾는 것이 없을 때 (<code>Optional.orElseThrow()</code> 기본)</td></tr>
+        <tr><td><code>UnsupportedOperationException</code></td><td>지원하지 않는 동작 (<code>List.of</code>에 add)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="warn"><b>예외 삼키기 금지</b> · <code>catch (Exception e) {}</code>처럼 비워 두면 오류가 사라져 원인을 못 찾습니다. 최소한 로그를 남기거나 다시 던지세요.</p>
+    <p class="spring-note"><b>Spring에서는</b> · 예외를 Controller마다 잡지 않고 <code>@RestControllerAdvice</code> + <code>@ExceptionHandler</code>에서 한 번에 HTTP 응답(400, 404 등)으로 바꿉니다. <code>@Transactional</code>은 기본적으로 <b>RuntimeException</b>이 나면 롤백합니다.</p>
+  </article>
+
+  <article class="topic" id="m-lambda">
+    <h3><span class="num">4.4</span>람다와 메서드 참조 <span class="api">-&gt; · ::</span></h3>
+    <p>람다는 "이름 없는 함수"입니다. 메서드가 하나뿐인 인터페이스(함수형 인터페이스) 자리에 넣을 수 있습니다.</p>
+<pre><code class="language-java">// 모양
+() -&gt; "hi"                       // 매개변수 없음
+x -&gt; x * 2                       // 매개변수 1개 (괄호 생략 가능)
+(a, b) -&gt; a + b                  // 2개
+(a, b) -&gt; {                      // 여러 줄이면 중괄호 + return
+    int sum = a + b;
+    return sum * 2;
+}
+
+// 메서드 참조: 람다가 메서드 하나만 부를 때 줄여 쓰기
+m -&gt; m.getName()           ==  Member::getName         // 인스턴스 메서드
+s -&gt; Integer.parseInt(s)   ==  Integer::parseInt       // static 메서드
+x -&gt; System.out.println(x) ==  System.out::println     // 특정 객체의 메서드
+name -&gt; new Member(name)   ==  Member::new             // 생성자
+
+// 정렬 예
+members.sort(Comparator.comparing(Member::getAge));                 // 나이 오름차순
+members.sort(Comparator.comparing(Member::getAge).reversed()
+                       .thenComparing(Member::getName));            // 나이 내림차순, 같으면 이름순</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>함수형 인터페이스</th><th>모양</th><th>쓰이는 곳</th></tr></thead>
+      <tbody>
+        <tr><td><code>Function&lt;T, R&gt;</code></td><td><code>T → R</code></td><td><code>stream.map(...)</code>, <code>optional.map(...)</code></td></tr>
+        <tr><td><code>Predicate&lt;T&gt;</code></td><td><code>T → boolean</code></td><td><code>stream.filter(...)</code>, <code>removeIf(...)</code></td></tr>
+        <tr><td><code>Consumer&lt;T&gt;</code></td><td><code>T → (없음)</code></td><td><code>forEach(...)</code>, <code>ifPresent(...)</code></td></tr>
+        <tr><td><code>Supplier&lt;T&gt;</code></td><td><code>() → T</code></td><td><code>orElseThrow(() -&gt; ...)</code>, <code>orElseGet(...)</code></td></tr>
+        <tr><td><code>BiFunction&lt;T, U, R&gt;</code></td><td><code>(T, U) → R</code></td><td><code>map.merge(...)</code></td></tr>
+        <tr><td><code>Runnable</code></td><td><code>() → (없음)</code></td><td>스레드 작업</td></tr>
+      </tbody>
+    </table></div>
+    <p class="warn"><b>람다 안에서 바깥 변수 바꾸기 불가</b> · 람다가 쓰는 지역 변수는 사실상 final이어야 합니다. <code>int count = 0; list.forEach(x -&gt; count++);</code>는 컴파일 에러입니다. 대신 <code>stream().count()</code>를 쓰세요.</p>
+  </article>
+
+  <article class="topic" id="m-stream">
+    <h3><span class="num">4.5</span>Stream</h3>
+    <p>컬렉션을 "걸러내고(filter) → 바꾸고(map) → 모으는(collect)" 흐름을 한 줄씩 이어 씁니다. 원본 리스트는 바뀌지 않습니다.</p>
+<pre><code class="language-java">List&lt;String&gt; names = members.stream()
+        .filter(m -&gt; m.getAge() &gt;= 20)        // 조건에 맞는 것만
+        .sorted(Comparator.comparing(Member::getName))
+        .map(Member::getName)                 // Member → String 으로 변환
+        .distinct()                           // 중복 제거
+        .limit(10)                            // 앞에서 10개
+        .toList();                            // List 로 모으기 (Java 16+)
+
+// ★ 서버 코드 단골: Entity 목록 → DTO 목록
+List&lt;MemberResponse&gt; dtos = members.stream()
+        .map(MemberResponse::from)
+        .toList();
+
+// 하나 찾기 / 조건 확인
+Optional&lt;Member&gt; first = members.stream().filter(m -&gt; m.getName().equals("kim")).findFirst();
+boolean anyAdult = members.stream().anyMatch(m -&gt; m.getAge() &gt;= 20);
+boolean allActive = members.stream().allMatch(Member::isActive);
+long count = members.stream().filter(Member::isActive).count();
+
+// 숫자 계산
+int total = orders.stream().mapToInt(Order::getPrice).sum();
+double avg = members.stream().mapToInt(Member::getAge).average().orElse(0);
+
+// Collectors
+String csv = names.stream().collect(Collectors.joining(", "));         // "kim, lee"
+Map&lt;Long, Member&gt; byId = members.stream()
+        .collect(Collectors.toMap(Member::getId, m -&gt; m));            // id → 객체
+Map&lt;String, List&lt;Member&gt;&gt; byCity = members.stream()
+        .collect(Collectors.groupingBy(Member::getCity));            // 도시별 묶기
+Map&lt;String, Long&gt; countByCity = members.stream()
+        .collect(Collectors.groupingBy(Member::getCity, Collectors.counting()));</code></pre>
+    <p class="tip"><b>언제 for 를 쓰나</b> · 중간에 break, 예외 처리, 여러 변수 수정이 필요하면 for문이 더 읽기 쉽습니다. Stream은 "변환해서 모으기"에 씁니다.</p>
+  </article>
+
+  <article class="topic" id="m-enum">
+    <h3><span class="num">4.6</span>enum <span class="api">정해진 값 목록</span></h3>
+    <p>주문 상태, 회원 등급처럼 <b>값이 정해진 목록</b>은 문자열 대신 enum으로 만듭니다. 오타가 컴파일 에러로 잡힙니다.</p>
+<pre><code class="language-java">public enum OrderStatus {
+    ORDERED("주문 완료"),
+    SHIPPING("배송 중"),
+    DELIVERED("배송 완료"),
+    CANCELED("취소");
+
+    private final String label;                     // enum 도 필드·생성자·메서드를 가질 수 있음
+
+    OrderStatus(String label) { this.label = label; }
+
+    public String getLabel() { return label; }
+
+    public boolean canCancel() {
+        return this == ORDERED;                     // enum 비교는 == 사용 OK
+    }
+}
+
+OrderStatus s = OrderStatus.ORDERED;
+s.name();                          // "ORDERED"
+s.getLabel();                      // "주문 완료"
+OrderStatus.valueOf("SHIPPING");   // 문자열 → enum (없는 이름이면 예외)
+OrderStatus.values();              // 전체 배열
+
+String msg = switch (s) {
+    case ORDERED, SHIPPING -&gt; "진행 중";
+    case DELIVERED -&gt; "완료";
+    case CANCELED -&gt; "취소됨";
+};</code></pre>
+    <p class="spring-note"><b>Spring에서는</b> · JPA Entity에 enum 필드를 둘 때는 <code>@Enumerated(EnumType.STRING)</code>을 붙입니다. 기본값(ORDINAL, 순서 숫자)으로 두면 나중에 enum 순서를 바꿀 때 DB 데이터가 꼬입니다.</p>
+  </article>
+
+  <article class="topic" id="m-record">
+    <h3><span class="num">4.7</span>record <span class="api">Java 16+</span></h3>
+    <p>데이터만 담는 불변 클래스를 한 줄로 만듭니다. 생성자, getter, <code>equals</code>, <code>hashCode</code>, <code>toString</code>이 자동으로 생깁니다. <b>DTO에 딱 맞습니다.</b></p>
+<pre><code class="language-java">public record MemberResponse(Long id, String name) {
+
+    // 검증이 필요하면 compact 생성자
+    public MemberResponse {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름은 필수");
+        }
+    }
+
+    // static 팩토리 메서드 추가 가능
+    public static MemberResponse from(Member member) {
+        return new MemberResponse(member.getId(), member.getName());
+    }
+}
+
+MemberResponse r = new MemberResponse(1L, "kim");
+r.id();        // 1    ← getId() 가 아니라 id()
+r.name();      // "kim"
+r.toString();  // "MemberResponse[id=1, name=kim]"</code></pre>
+    <p class="warn"><b>Entity 에는 쓰지 않기</b> · record는 필드를 바꿀 수 없고 기본 생성자가 없어서 JPA Entity로는 못 씁니다. 요청/응답 DTO에 쓰세요.</p>
+  </article>
+
+  <article class="topic" id="m-annotation">
+    <h3><span class="num">4.8</span>어노테이션 <span class="api">@</span></h3>
+    <p>코드에 붙이는 "메타 정보 스티커"입니다. 그 자체로는 아무 일도 안 하고, 컴파일러나 프레임워크(Spring)가 읽고 동작을 결정합니다.</p>
+<pre><code class="language-java">@Override                 // 컴파일러: 부모 메서드를 제대로 재정의했는지 검사
+@Deprecated               // 더 이상 쓰지 말라는 표시
+@FunctionalInterface      // 메서드가 하나뿐인지 검사
+@SuppressWarnings("unchecked")
+
+// 직접 만들기 (자주 하진 않지만 모양은 알아두기)
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)       // 실행 중에도 읽을 수 있게
+public @interface LoginRequired {
+    String role() default "USER";
+}</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Spring 어노테이션</th><th>뜻</th></tr></thead>
+      <tbody>
+        <tr><td><code>@Component</code> <code>@Service</code> <code>@Repository</code> <code>@Controller</code></td><td>이 클래스의 객체를 Spring이 만들어 관리(빈 등록)</td></tr>
+        <tr><td><code>@RestController</code></td><td>Controller + 반환값을 JSON으로</td></tr>
+        <tr><td><code>@GetMapping("/x")</code> <code>@PostMapping</code></td><td>이 URL + HTTP 메서드로 들어온 요청을 이 메서드가 처리</td></tr>
+        <tr><td><code>@RequestBody</code> <code>@PathVariable</code> <code>@RequestParam</code></td><td>요청 JSON / URL 경로 값 / 쿼리 파라미터를 매개변수로</td></tr>
+        <tr><td><code>@Transactional</code></td><td>메서드 전체를 하나의 DB 트랜잭션으로</td></tr>
+        <tr><td><code>@Entity</code> <code>@Id</code> <code>@Column</code></td><td>JPA: 이 클래스를 DB 테이블과 연결</td></tr>
+        <tr><td><code>@Valid</code> <code>@NotBlank</code> <code>@Email</code></td><td>요청 값 검증</td></tr>
+      </tbody>
+    </table></div>
+  </article>
+
+  <article class="topic" id="m-null">
+    <h3><span class="num">4.9</span>null 다루기 <span class="api">NullPointerException 피하기</span></h3>
+<pre><code class="language-java">// NPE 가 나는 순간: null 인 참조에 . 을 찍을 때
+String name = null;
+name.length();                              // NullPointerException
+
+// 방어 방법
+if (name != null &amp;&amp; !name.isBlank()) { ... }      // 1) 먼저 확인 (&amp;&amp; 단락 평가)
+"admin".equals(role);                             // 2) 상수를 앞에
+Objects.equals(a, b);                             // 3) 둘 다 null 이어도 안전한 비교
+Objects.requireNonNull(member, "member 는 필수"); // 4) null 이면 즉시 실패 (생성자에서)
+Objects.requireNonNullElse(nickname, "익명");     // 5) null 이면 기본값
+Optional.ofNullable(x).map(...).orElse(...);      // 6) Optional 로 감싸기
+
+// 컬렉션은 null 대신 빈 컬렉션을 돌려주기
+public List&lt;Member&gt; findAll() {
+    return members == null ? List.of() : members;
+}</code></pre>
+    <p class="tip"><b>원칙</b> · 메서드가 "없음"을 돌려줘야 하면 <code>null</code> 대신 <code>Optional</code>이나 빈 리스트를 돌려주세요. 받는 쪽에서 null 확인을 잊어도 터지지 않습니다.</p>
+  </article>
+
+  <article class="topic" id="m-thread">
+    <h3><span class="num">4.10</span>동시성 기초 <span class="api">서버가 여러 요청을 동시에 처리할 때</span></h3>
+    <p>웹 서버는 요청마다 스레드가 하나씩 붙어 <b>동시에</b> 실행됩니다. Spring의 Service, Repository 빈은 객체가 <b>하나</b>뿐이라(싱글톤) 여러 스레드가 같은 객체를 함께 씁니다.</p>
+<pre><code class="language-java">@Service
+public class CounterService {
+
+    private int count = 0;                       // ✗ 여러 요청이 동시에 ++ 하면 값이 틀어짐
+    private final AtomicLong safeCount = new AtomicLong();          // ✓ 원자적 증가
+    private final Map&lt;Long, Member&gt; store = new ConcurrentHashMap&lt;&gt;(); // ✓ 동시 접근 안전한 Map
+
+    public long next() {
+        return safeCount.incrementAndGet();
+    }
+}</code></pre>
+    <p class="warn"><b>빈에 상태를 두지 않기</b> · Service에 "현재 로그인 사용자" 같은 요청별 값을 필드로 저장하면 다른 사람 요청과 섞입니다. 요청별 값은 <b>지역 변수나 매개변수</b>로만 다루세요. 필드에는 <code>private final</code>로 주입받은 의존성만 둡니다.</p>
+  </article>
+</section>
+
+<!-- ====================================================== -->
+<section id="spring">
+  <div class="section-head">
+    <span class="eyebrow">Part 5</span>
+    <h2>Spring 속 자바</h2>
+    <p class="lead">위에서 정리한 자바 문법이 Spring 코드에서 어떻게 조합되는지 봅니다.</p>
+  </div>
+
+  <article class="topic" id="s-layer">
+    <h3><span class="num">5.1</span>계층 구조 <span class="api">Controller · Service · Repository</span></h3>
     <div class="flow">
-      <div class="node"><b>Client</b><span>브라우저, curl, Postman</span></div>
+      <div class="node"><b>Client</b><span>브라우저, 앱, Postman</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b>Controller</b><span>URL을 받고 요청/응답 형식(DTO)을 다룸</span></div>
+      <div class="node"><b>Controller</b><span>URL을 받고 요청/응답 DTO를 다룸</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b>Service</b><span>비즈니스 규칙. "이름 중복 금지" 같은 판단</span></div>
+      <div class="node"><b>Service</b><span>비즈니스 규칙, 트랜잭션</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b>Repository</b><span>저장과 조회만 담당</span></div>
+      <div class="node"><b>Repository</b><span>저장과 조회만</span></div>
       <div class="arrow">→</div>
-      <div class="node"><b>저장소</b><span>지금은 HashMap, 나중에 DB</span></div>
+      <div class="node"><b>DB</b><span>MySQL 등</span></div>
     </div>
     <div class="table-wrap"><table>
       <thead><tr><th>계층</th><th>하는 일</th><th>하면 안 되는 일</th></tr></thead>
       <tbody>
-        <tr><td>Controller</td><td>HTTP 요청 받기, DTO 변환, Service 호출</td><td>중복 검사 같은 비즈니스 판단, 저장소 직접 접근</td></tr>
-        <tr><td>Service</td><td>규칙 검증, 여러 Repository 조합</td><td>HTTP나 JSON 형식 신경 쓰기</td></tr>
+        <tr><td>Controller</td><td>HTTP 요청 받기, DTO 변환, Service 호출</td><td>중복 검사 같은 비즈니스 판단, Repository 직접 호출</td></tr>
+        <tr><td>Service</td><td>규칙 검증, 여러 Repository 조합, 트랜잭션</td><td>HTTP나 JSON 형식 신경 쓰기</td></tr>
         <tr><td>Repository</td><td>save, findById, findAll</td><td>"이미 있으면 예외" 같은 판단</td></tr>
       </tbody>
     </table></div>
   </article>
 
-  <article class="topic lab-step" id="s-1">
-    <h3><span class="num">1</span>프로젝트 만들기</h3>
-    <ul class="checks">
-      <li><label><input type="checkbox" id="s-1-1"><span><a href="https://start.spring.io" target="_blank" rel="noopener">start.spring.io</a> 접속: Gradle - Groovy, Java, 기본 선택된 Spring Boot 버전, Java 21</span></label></li>
-      <li><label><input type="checkbox" id="s-1-2"><span>Group <code>com.example</code>, Artifact <code>hello</code></span></label></li>
-      <li><label><input type="checkbox" id="s-1-3"><span>Dependencies에 <b>Spring Web</b> 하나만 추가 → Generate → 압축 풀고 IntelliJ로 열기</span></label></li>
-      <li><label><input type="checkbox" id="s-1-4"><span><code>HelloApplication</code> 실행 후 로그에 <code>Tomcat started on port 8080</code> 확인</span></label></li>
-    </ul>
+  <article class="topic" id="s-di">
+    <h3><span class="num">5.2</span>생성자 주입 (DI)</h3>
+    <p>필요한 객체를 내가 <code>new</code> 하지 않고 <b>생성자로 받기만</b> 하면, 무엇을 넣을지는 밖에서 정합니다. 순수 자바에서는 내가 직접 넣고, Spring에서는 Spring이 넣어 줍니다.</p>
+<pre><code class="language-java">// 순수 자바: 내가 조립
+MemberRepository repo = new MemoryMemberRepository();
+MemberService service = new MemberService(repo);
+
+// Spring: 어노테이션만 붙이면 Spring 이 조립
+@Service
+public class MemberService {
+    private final MemberRepository memberRepository;   // private final: 바뀌지 않음 보장
+
+    public MemberService(MemberRepository memberRepository) {  // 생성자가 하나면 @Autowired 생략 가능
+        this.memberRepository = memberRepository;
+    }
+}
+
+// Lombok 으로 줄이면 (위와 같은 생성자가 자동 생성됨)
+@Service
+@RequiredArgsConstructor
+public class MemberService {
+    private final MemberRepository memberRepository;
+}</code></pre>
+    <p class="tip"><b>왜 필드 주입(@Autowired 필드) 대신 생성자 주입?</b> · <code>final</code>을 붙일 수 있어 바뀌지 않음이 보장되고, 테스트에서 <code>new MemberService(가짜Repository)</code>로 쉽게 만들 수 있습니다.</p>
   </article>
 
-  <article class="topic lab-step" id="s-2">
-    <h3><span class="num">2</span>파일 구조</h3>
-    <p class="goal">모든 패키지는 반드시 <code>HelloApplication</code>이 있는 <code>com.example.hello</code> <b>아래</b>에 둡니다. 밖에 두면 Spring이 찾지 못해서 주입이 실패합니다.</p>
-<pre><code class="language-plaintext">hello/
-├── build.gradle
-└── src/main/
-    ├── java/com/example/hello/
-    │   ├── HelloApplication.java           // 시작점 (자동 생성됨)
-    │   ├── controller/
-    │   │   └── MemberController.java       // @RestController
-    │   ├── service/
-    │   │   └── MemberService.java          // @Service
-    │   ├── repository/
-    │   │   ├── MemberRepository.java       // interface
-    │   │   └── MemoryMemberRepository.java // @Repository 구현체
-    │   ├── domain/
-    │   │   └── Member.java                 // 핵심 데이터
-    │   ├── dto/
-    │   │   ├── MemberCreateRequest.java    // 요청 JSON 모양
-    │   │   └── MemberResponse.java         // 응답 JSON 모양
-    │   └── exception/
-    │       └── GlobalExceptionHandler.java // 에러를 JSON으로
-    └── resources/
-        └── application.properties</code></pre>
+  <article class="topic" id="s-lombok">
+    <h3><span class="num">5.3</span>Lombok <span class="api">반복 코드 자동 생성</span></h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>어노테이션</th><th>만들어 주는 코드</th><th>주의</th></tr></thead>
+      <tbody>
+        <tr><td><code>@Getter</code> / <code>@Setter</code></td><td>모든 필드의 getter / setter</td><td>Entity에 <code>@Setter</code>는 지양</td></tr>
+        <tr><td><code>@RequiredArgsConstructor</code></td><td><code>final</code> 필드만 받는 생성자</td><td>생성자 주입용</td></tr>
+        <tr><td><code>@NoArgsConstructor</code></td><td>기본 생성자</td><td>JPA Entity: <code>(access = AccessLevel.PROTECTED)</code></td></tr>
+        <tr><td><code>@AllArgsConstructor</code></td><td>모든 필드를 받는 생성자</td><td>필드 순서 바뀌면 버그 위험</td></tr>
+        <tr><td><code>@Builder</code></td><td><code>Member.builder().name("kim").build()</code></td><td>매개변수가 많을 때</td></tr>
+        <tr><td><code>@ToString</code> / <code>@EqualsAndHashCode</code></td><td>toString / equals, hashCode</td><td>Entity 연관관계 필드는 제외(무한 루프)</td></tr>
+        <tr><td><code>@Data</code></td><td>위 여러 개를 한 번에</td><td><b>Entity에는 쓰지 않기</b></td></tr>
+        <tr><td><code>@Slf4j</code></td><td><code>log</code> 로거 필드</td><td><code>log.info("id={}", id)</code></td></tr>
+      </tbody>
+    </table></div>
   </article>
 
-  <article class="topic lab-step" id="s-3">
-    <h3><span class="num">3</span>아래에서 위로 코드 작성</h3>
-    <p class="goal">Domain → Repository → Service → DTO → Controller 순서로 만듭니다. 아래 계층이 있어야 위 계층이 컴파일됩니다.</p>
+  <article class="topic" id="s-example">
+    <h3><span class="num">5.4</span>전체 예제: 회원 API <span class="api">메모리 저장</span></h3>
+    <p>지금까지의 문법이 한 번에 모인 예제입니다. 펼쳐서 필요한 파일만 보세요. <a href="https://start.spring.io" target="_blank" rel="noopener">start.spring.io</a>에서 <b>Spring Web</b> 하나만 넣고 만든 프로젝트(<code>com.example.hello</code>)에 그대로 넣으면 동작합니다.</p>
+<pre><code class="language-plaintext">com/example/hello/
+├── HelloApplication.java
+├── controller/MemberController.java
+├── service/MemberService.java
+├── repository/MemberRepository.java        // interface
+├── repository/MemoryMemberRepository.java  // HashMap 구현체
+├── domain/Member.java
+├── dto/MemberCreateRequest.java · MemberResponse.java   // record
+└── exception/GlobalExceptionHandler.java</code></pre>
 
-    <div class="file">
-      <div class="file-name">domain/Member.java <em>블록 2의 Member와 같음</em></div>
+    <details>
+      <summary><span class="file-hint">domain/Member.java</span><em>클래스 · 캡슐화</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.domain;
 
 public class Member {
@@ -1252,10 +1482,11 @@ public class Member {
     public String getName() { return name; }
     public void setId(Long id) { this.id = id; }
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">repository/MemberRepository.java <em>무엇을 할지만 정한 인터페이스</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">repository/MemberRepository.java</span><em>인터페이스 · Optional · 제네릭</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.repository;
 
 import com.example.hello.domain.Member;
@@ -1268,10 +1499,11 @@ public interface MemberRepository {
     Optional&lt;Member&gt; findByName(String name);
     List&lt;Member&gt; findAll();
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">repository/MemoryMemberRepository.java <em>HashMap으로 구현</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">repository/MemoryMemberRepository.java</span><em>구현체 · 동시성 · Stream</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.repository;
 
 import com.example.hello.domain.Member;
@@ -1280,7 +1512,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository   // Spring이 이 객체를 만들어 관리(빈 등록)
+@Repository
 public class MemoryMemberRepository implements MemberRepository {
 
     private final Map&lt;Long, Member&gt; store = new ConcurrentHashMap&lt;&gt;();
@@ -1310,10 +1542,11 @@ public class MemoryMemberRepository implements MemberRepository {
         return new ArrayList&lt;&gt;(store.values());
     }
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">service/MemberService.java <em>규칙은 여기에만</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">service/MemberService.java</span><em>생성자 주입 · 예외 · 람다</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.service;
 
 import com.example.hello.domain.Member;
@@ -1326,7 +1559,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    // 생성자가 하나면 Spring이 알아서 MemoryMemberRepository를 넣어줌 (DI)
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
@@ -1347,28 +1579,28 @@ public class MemberService {
         return memberRepository.findAll();
     }
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">dto/MemberCreateRequest.java · dto/MemberResponse.java <em>JSON 모양을 정하는 record</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">dto/MemberCreateRequest.java · MemberResponse.java</span><em>record</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.dto;
 
-// 요청 바디 {"name": "kim"} 이 이 객체로 바뀜
 public record MemberCreateRequest(String name) {}</code></pre>
 <pre><code class="language-java">package com.example.hello.dto;
 
 import com.example.hello.domain.Member;
 
-// 이 객체가 {"id": 1, "name": "kim"} 으로 바뀌어 응답됨
 public record MemberResponse(Long id, String name) {
     public static MemberResponse from(Member member) {
         return new MemberResponse(member.getId(), member.getName());
     }
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">controller/MemberController.java <em>URL과 Service를 연결</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">controller/MemberController.java</span><em>어노테이션 · Stream 변환</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.controller;
 
 import com.example.hello.dto.MemberCreateRequest;
@@ -1377,8 +1609,8 @@ import com.example.hello.service.MemberService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController                  // 반환값을 JSON으로 응답
-@RequestMapping("/api/members")   // 이 클래스의 공통 URL
+@RestController
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -1387,28 +1619,29 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping                     // POST /api/members
+    @PostMapping
     public MemberResponse create(@RequestBody MemberCreateRequest request) {
         Long id = memberService.join(request.name());
         return MemberResponse.from(memberService.findOne(id));
     }
 
-    @GetMapping                      // GET /api/members
+    @GetMapping
     public List&lt;MemberResponse&gt; list() {
         return memberService.findAll().stream()
                 .map(MemberResponse::from)
                 .toList();
     }
 
-    @GetMapping("/{id}")            // GET /api/members/1
+    @GetMapping("/{id}")
     public MemberResponse get(@PathVariable Long id) {
         return MemberResponse.from(memberService.findOne(id));
     }
 }</code></pre>
-    </div>
-
-    <div class="file">
-      <div class="file-name">exception/GlobalExceptionHandler.java <em>예외를 500 대신 400 + 메시지로</em></div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">exception/GlobalExceptionHandler.java</span><em>예외 → HTTP 응답</em></summary>
+      <div class="details-body">
 <pre><code class="language-java">package com.example.hello.exception;
 
 import org.springframework.http.HttpStatus;
@@ -1424,99 +1657,119 @@ public class GlobalExceptionHandler {
         return Map.of("message", e.getMessage());
     }
 }</code></pre>
-    </div>
-  </article>
-
-  <article class="topic lab-step" id="s-4">
-    <h3><span class="num">4</span>실행하고 호출해 보기</h3>
-    <p class="goal">앱을 실행한 상태에서 터미널에 입력합니다. 주석이 기대 결과입니다.</p>
-<pre><code class="language-bash"># 회원 가입
-curl -X POST localhost:8080/api/members \
-     -H "Content-Type: application/json" \
-     -d '{"name":"kim"}'
+      </div>
+    </details>
+    <details>
+      <summary><span class="file-hint">curl 로 호출해 보기</span><em>기대 결과는 주석</em></summary>
+      <div class="details-body">
+<pre><code class="language-bash">curl -X POST localhost:8080/api/members \
+     -H "Content-Type: application/json" -d '{"name":"kim"}'
 # {"id":1,"name":"kim"}
 
-# 같은 이름으로 한 번 더 → 400
 curl -X POST localhost:8080/api/members \
-     -H "Content-Type: application/json" \
-     -d '{"name":"kim"}'
+     -H "Content-Type: application/json" -d '{"name":"kim"}'
 # {"message":"이미 존재하는 회원입니다."}
 
-# 전체 조회 / 단건 조회
-curl localhost:8080/api/members        # [{"id":1,"name":"kim"}]
-curl localhost:8080/api/members/1      # {"id":1,"name":"kim"}
-curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=99"}</code></pre>
-    <ul class="checks">
-      <li><label><input type="checkbox" id="s-4-1"><span>가입, 중복 가입, 전체 조회, 단건 조회, 없는 id 조회 5개 모두 기대 결과와 일치</span></label></li>
-      <li><label><input type="checkbox" id="s-4-2"><span>앱을 재시작하면 데이터가 사라지는 이유 설명하기 (메모리 저장이라서)</span></label></li>
-      <li><label><input type="checkbox" id="s-4-3"><span><code>MemberService</code> 어디에도 <code>new MemoryMemberRepository()</code>가 없는데 동작하는 이유 설명하기</span></label></li>
-    </ul>
+curl localhost:8080/api/members      # [{"id":1,"name":"kim"}]
+curl localhost:8080/api/members/99   # {"message":"회원이 없습니다. id=99"}</code></pre>
+      </div>
+    </details>
   </article>
 
-  <article class="topic lab-step" id="s-5">
-    <h3><span class="num">5</span>자주 막히는 곳</h3>
+  <article class="topic" id="s-map">
+    <h3><span class="num">5.5</span>자바 개념 → Spring 대응표</h3>
     <div class="table-wrap"><table>
-      <thead><tr><th>증상</th><th>원인과 해결</th></tr></thead>
+      <thead><tr><th>자바 개념</th><th>Spring에서 보이는 모습</th></tr></thead>
       <tbody>
-        <tr><td>Port 8080 was already in use</td><td>이미 실행 중인 앱이 있음. IntelliJ에서 이전 실행을 중지</td></tr>
-        <tr><td>required a bean of type ... that could not be found</td><td>클래스에 <code>@Repository / @Service</code>를 빠뜨렸거나 패키지가 <code>com.example.hello</code> 밖에 있음</td></tr>
-        <tr><td>415 Unsupported Media Type</td><td>curl에 <code>-H "Content-Type: application/json"</code>이 빠짐</td></tr>
-        <tr><td>404 Not Found</td><td>URL 오타. <code>/api/members</code>인지, POST/GET을 맞게 썼는지 확인</td></tr>
-        <tr><td>응답 JSON이 <code>{}</code>로 비어 있음</td><td>DTO에 getter가 없음. record를 쓰면 해결</td></tr>
+        <tr><td><a href="#o-class">클래스 · 캡슐화</a></td><td>Entity, DTO, Controller, Service가 모두 평범한 클래스</td></tr>
+        <tr><td><a href="#o-interface">인터페이스 · 다형성</a></td><td>Repository 인터페이스, 구현체 교체, DI의 기반</td></tr>
+        <tr><td><a href="#o-access">생성자 · final</a></td><td>생성자 주입, <code>@RequiredArgsConstructor</code></td></tr>
+        <tr><td><a href="#m-annotation">어노테이션</a></td><td><code>@Service @GetMapping @Transactional @Entity</code></td></tr>
+        <tr><td><a href="#m-generic">제네릭</a></td><td><code>JpaRepository&lt;Member, Long&gt;</code>, <code>ResponseEntity&lt;T&gt;</code></td></tr>
+        <tr><td><a href="#m-optional">Optional</a></td><td><code>repository.findById(id).orElseThrow()</code></td></tr>
+        <tr><td><a href="#m-exception">예외</a></td><td><code>@ExceptionHandler</code>, 트랜잭션 롤백</td></tr>
+        <tr><td><a href="#m-stream">람다 · Stream</a></td><td>Entity 목록 → DTO 목록 변환</td></tr>
+        <tr><td><a href="#m-enum">enum</a></td><td><code>@Enumerated(EnumType.STRING)</code> 상태 필드</td></tr>
+        <tr><td><a href="#m-record">record</a></td><td>요청/응답 DTO</td></tr>
+        <tr><td><a href="#m-thread">동시성</a></td><td>싱글톤 빈은 상태 없이(stateless)</td></tr>
       </tbody>
     </table></div>
-    <p class="spring-note"><b>다음 단계</b> · DB를 붙일 때는 <code>MemberRepository</code>를 JPA 구현으로 바꾸기만 하면 되고, Service와 Controller는 한 줄도 안 바뀝니다. 블록 3에서 배운 인터페이스와 다형성이 바로 이 지점입니다.</p>
   </article>
 </section>
 
 <!-- ====================================================== -->
-<section id="wrap-up">
+<section id="review">
   <div class="section-head">
-    <span class="eyebrow">Part 5</span>
-    <h2>정리와 참고 자료</h2>
+    <span class="eyebrow">Part 6</span>
+    <h2>복습</h2>
+    <p class="lead">주기적으로 여기만 훑어봐도 됩니다. 질문에 먼저 소리 내서 답해 보고 펼쳐서 확인하세요.</p>
   </div>
 
-  <article class="topic" id="w-map">
-    <h3>자바 개념이 Spring에서 쓰이는 곳</h3>
+  <article class="topic" id="r-mistakes">
+    <h3><span class="num">6.1</span>자주 하는 실수 모음</h3>
     <div class="table-wrap"><table>
-      <thead><tr><th>자바 개념</th><th>Spring에서 보이는 모습</th></tr></thead>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
       <tbody>
-        <tr><td>클래스 · 캡슐화</td><td>Entity, DTO, Controller, Service가 모두 평범한 클래스</td></tr>
-        <tr><td>인터페이스 · 다형성</td><td>Repository 인터페이스, 구현체 교체, DI의 기반</td></tr>
-        <tr><td>생성자 · final</td><td>생성자 주입, <code>@RequiredArgsConstructor</code></td></tr>
-        <tr><td>어노테이션</td><td><code>@Controller @Service @Repository @Autowired @GetMapping</code></td></tr>
-        <tr><td>컬렉션 · 제네릭</td><td><code>List&lt;MemberDto&gt;</code> 응답, <code>JpaRepository&lt;Member, Long&gt;</code></td></tr>
-        <tr><td>Optional</td><td><code>repository.findById(id).orElseThrow()</code></td></tr>
-        <tr><td>예외</td><td><code>@ExceptionHandler</code>, 커스텀 예외로 에러 응답 만들기</td></tr>
-        <tr><td>람다 · Stream</td><td>Entity 목록을 DTO 목록으로 변환할 때</td></tr>
-        <tr><td>LocalDateTime</td><td>생성일·수정일 필드</td></tr>
+        <tr><td>문자열이 같은데 false</td><td><code>==</code>로 비교 (주소 비교)</td><td><code>equals()</code></td></tr>
+        <tr><td><code>Long</code> id 비교가 가끔 false</td><td>래퍼 클래스 <code>==</code> (128 이상)</td><td><code>Objects.equals(a, b)</code></td></tr>
+        <tr><td><code>7 / 2</code>가 3</td><td>정수 나눗셈</td><td><code>7 / 2.0</code> 또는 <code>(double) 7 / 2</code></td></tr>
+        <tr><td>nextLine()이 빈 값</td><td>nextInt() 뒤 남은 엔터</td><td><code>sc.nextLine()</code>으로 한 번 비우기</td></tr>
+        <tr><td>NullPointerException</td><td>null에 <code>.</code> 호출, null 언박싱</td><td><a href="#m-null">null 다루기</a> 참고</td></tr>
+        <tr><td>ArrayIndexOutOfBounds</td><td><code>arr[arr.length]</code></td><td>마지막은 <code>length - 1</code></td></tr>
+        <tr><td>ConcurrentModificationException</td><td>for-each 중 <code>list.remove()</code></td><td><code>list.removeIf(...)</code></td></tr>
+        <tr><td>UnsupportedOperationException</td><td><code>List.of()</code>, <code>Arrays.asList()</code>에 add</td><td><code>new ArrayList&lt;&gt;(List.of(...))</code></td></tr>
+        <tr><td>HashSet에 같은 객체가 2개</td><td>equals만 재정의, hashCode 누락</td><td>둘 다 재정의 또는 record</td></tr>
+        <tr><td>NoSuchElementException</td><td>비어 있는 Optional에 <code>get()</code></td><td><code>orElseThrow(() -&gt; ...)</code></td></tr>
+        <tr><td>메서드가 재정의 안 됨</td><td>이름 오타, <code>@Override</code> 없음</td><td>항상 <code>@Override</code></td></tr>
+        <tr><td>switch가 아래 case까지 실행</td><td>전통 switch에서 break 누락</td><td>화살표 switch</td></tr>
+        <tr><td>NumberFormatException</td><td>숫자가 아닌 문자열 parseInt</td><td>try-catch로 감싸기</td></tr>
+        <tr><td>required a bean ... could not be found</td><td>어노테이션 누락 또는 패키지가 스캔 범위 밖</td><td><code>@Service</code> 등 확인, 패키지 위치 확인</td></tr>
+        <tr><td>응답 JSON이 <code>{}</code></td><td>DTO에 getter 없음</td><td>record 사용 또는 <code>@Getter</code></td></tr>
+        <tr><td>다른 사용자 데이터가 섞임</td><td>싱글톤 빈 필드에 요청별 값 저장</td><td>지역 변수로만 다루기</td></tr>
       </tbody>
     </table></div>
   </article>
 
-  <div class="two" id="w-links">
-    <div class="list-card">
-      <h3>내일은 건너뛰어도 되는 것</h3>
-      <ul>
-        <li>스레드, 동시성 (Spring 초반엔 거의 안 씀)</li>
-        <li>파일 입출력 IO 스트림 상세</li>
-        <li>내부 클래스, 익명 클래스 세부 규칙</li>
-        <li>리플렉션, 비트 연산</li>
-        <li>Swing 같은 GUI</li>
-      </ul>
-    </div>
+  <article class="topic quiz" id="r-quiz">
+    <h3><span class="num">6.2</span>셀프 체크 질문</h3>
+    <details><summary><code>==</code>와 <code>equals()</code>는 언제 결과가 다른가?</summary><div class="details-body"><p><code>==</code>는 두 변수가 <b>같은 객체(주소)</b>를 가리키는지, <code>equals()</code>는 <b>값이 같은지</b> 봅니다. <code>new String("hi") == "hi"</code>는 false, <code>.equals</code>는 true. 기본 타입(int 등)은 <code>==</code>로 값 비교가 맞습니다.</p></div></details>
+    <details><summary>기본 타입과 래퍼 클래스(<code>int</code> vs <code>Integer</code>)의 차이는?</summary><div class="details-body"><p><code>int</code>는 값 자체, <code>Integer</code>는 객체입니다. <code>Integer</code>는 null이 될 수 있고 컬렉션·제네릭에 넣을 수 있습니다. 서로 자동 변환(오토박싱)되지만 null을 언박싱하면 NPE가 납니다.</p></div></details>
+    <details><summary><code>static</code> 메서드와 일반 메서드의 차이는?</summary><div class="details-body"><p>static은 <b>클래스</b>에 붙어 객체 없이 <code>클래스.메서드()</code>로 부르고, 객체 필드를 쓸 수 없습니다. 일반 메서드는 <b>객체</b>에 붙어 <code>객체.메서드()</code>로 부르고 그 객체의 필드를 씁니다.</p></div></details>
+    <details><summary>오버로딩과 오버라이딩의 차이는?</summary><div class="details-body"><p>오버로딩: 같은 클래스에서 이름은 같고 매개변수가 다른 메서드 여러 개. 오버라이딩: 자식 클래스가 부모 메서드를 같은 모양으로 다시 정의.</p></div></details>
+    <details><summary>인터페이스를 쓰면 무엇이 좋은가?</summary><div class="details-body"><p>사용하는 코드가 구현체가 아니라 약속(인터페이스)에만 의존하므로, 구현을 바꿔도(메모리 저장 → DB 저장) 사용하는 코드는 수정하지 않아도 됩니다. 테스트에서 가짜 구현을 넣기도 쉽습니다.</p></div></details>
+    <details><summary>추상 클래스와 인터페이스는 언제 각각 쓰나?</summary><div class="details-body"><p>공통 코드(필드, 구현된 메서드)를 물려주고 싶으면 추상 클래스, 역할만 정하고 구현은 자유롭게 바꾸고 싶으면 인터페이스. 클래스는 하나만 상속하지만 인터페이스는 여러 개 구현할 수 있습니다.</p></div></details>
+    <details><summary>equals를 재정의하면 왜 hashCode도 재정의해야 하나?</summary><div class="details-body"><p>HashMap/HashSet은 먼저 hashCode로 칸을 찾고 그다음 equals로 비교합니다. equals가 같아도 hashCode가 다르면 다른 칸에 들어가서 중복으로 저장됩니다.</p></div></details>
+    <details><summary>Checked 예외와 Unchecked 예외의 차이는? 서버 커스텀 예외는 보통 어느 쪽?</summary><div class="details-body"><p>Checked(<code>IOException</code> 등)는 try-catch나 throws가 강제되고, Unchecked(<code>RuntimeException</code> 하위)는 강제되지 않습니다. 서버 커스텀 예외는 보통 <code>RuntimeException</code>을 상속하고, 전역 핸들러(<code>@RestControllerAdvice</code>)에서 한 번에 처리합니다.</p></div></details>
+    <details><summary><code>Optional.orElse</code>와 <code>orElseGet</code>의 차이는?</summary><div class="details-body"><p><code>orElse(x)</code>는 값이 있어도 x를 <b>항상 미리 계산</b>합니다. <code>orElseGet(() -&gt; x)</code>는 값이 없을 때만 실행합니다. x를 만드는 비용이 크거나 DB 조회라면 orElseGet을 씁니다.</p></div></details>
+    <details><summary><code>Member::getName</code>은 무슨 뜻인가?</summary><div class="details-body"><p>메서드 참조입니다. <code>m -&gt; m.getName()</code>을 줄여 쓴 것으로, "Member를 받아서 getName()을 호출한 결과를 돌려주는 함수"입니다.</p></div></details>
+    <details><summary>Entity 목록을 DTO 목록으로 바꾸는 한 줄은?</summary><div class="details-body"><p><code>members.stream().map(MemberResponse::from).toList()</code></p></div></details>
+    <details><summary>왜 필드에 <code>private final</code>을 붙이고 생성자로 받는가?</summary><div class="details-body"><p>final이면 한 번 주입된 의존성이 바뀌지 않음이 보장되고, 생성자로 받으면 객체가 만들어질 때 반드시 채워집니다. 테스트에서 <code>new Service(가짜Repository)</code>로 직접 넣을 수도 있습니다.</p></div></details>
+    <details><summary>DI를 Spring 없이 한 문장으로 설명하면?</summary><div class="details-body"><p>객체가 필요한 의존 객체를 스스로 <code>new</code> 하지 않고, 바깥에서 생성자로 넣어 주는 것입니다.</p></div></details>
+    <details><summary>Service 빈에 요청별 값을 필드로 저장하면 왜 안 되나?</summary><div class="details-body"><p>Spring 빈은 기본적으로 싱글톤이라 모든 요청 스레드가 같은 객체를 공유합니다. 필드에 요청별 값을 저장하면 동시에 들어온 다른 요청이 덮어써서 데이터가 섞입니다.</p></div></details>
+    <details><summary>record는 DTO에 쓰는데 왜 Entity에는 안 쓰나?</summary><div class="details-body"><p>record는 불변(필드 변경 불가)이고 기본 생성자가 없습니다. JPA는 기본 생성자로 객체를 만들고 필드 값을 바꿔 가며 관리해야 해서 record와 맞지 않습니다.</p></div></details>
+  </article>
+
+  <div class="two" id="r-links">
     <div class="list-card">
       <h3>참고 자료</h3>
       <ul>
-        <li><a href="https://wikidocs.net/book/31" target="_blank" rel="noopener">점프 투 자바</a> · 한국어 무료, 블록 1~5 교재</li>
+        <li><a href="https://wikidocs.net/book/31" target="_blank" rel="noopener">점프 투 자바</a> · 한국어 무료 입문서</li>
         <li><a href="https://dev.java/learn/" target="_blank" rel="noopener">dev.java Learn</a> · Oracle 공식 튜토리얼</li>
-        <li><a href="https://docs.oracle.com/en/java/javase/21/docs/api/" target="_blank" rel="noopener">Java 21 API 문서</a> · Scanner 등 클래스 메서드 전체 목록</li>
-        <li><a href="https://spring.io/guides" target="_blank" rel="noopener">Spring Guides</a> · 다음 단계</li>
+        <li><a href="https://docs.oracle.com/en/java/javase/21/docs/api/" target="_blank" rel="noopener">Java 21 API 문서</a> · 클래스별 메서드 전체 목록</li>
+        <li><a href="https://spring.io/guides" target="_blank" rel="noopener">Spring Guides</a> · 주제별 Spring 실습</li>
+      </ul>
+    </div>
+    <div class="list-card">
+      <h3>이 노트 활용법</h3>
+      <ul>
+        <li>코드 읽다가 막히면 <kbd>/</kbd> 눌러 키워드 검색</li>
+        <li>주 1회 <a href="#r-mistakes">실수 모음</a>과 <a href="#r-quiz">셀프 체크</a> 훑기</li>
+        <li>새로 알게 된 문법은 이 저장소 <code>index.html</code>에 추가해서 노트 키우기</li>
       </ul>
     </div>
   </div>
 
-  <footer>체크 상태는 이 브라우저에만 저장됩니다. 다른 기기에서는 처음부터 표시됩니다.</footer>
+  <footer>Java 21 기준 · 코드 블록 오른쪽 위 "복사"로 바로 붙여 넣을 수 있습니다.</footer>
 </section>
 
 </main>
@@ -1542,11 +1795,9 @@ curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'copy'; btn.textContent = '복사';
     btn.addEventListener('click', function () {
-      var text = pre.innerText;
       var done = function () { btn.textContent = '복사됨'; setTimeout(function () { btn.textContent = '복사'; }, 1400); };
-      try {
-        navigator.clipboard.writeText(text).then(done, function () { btn.textContent = '실패'; });
-      } catch (e) { btn.textContent = '실패'; }
+      try { navigator.clipboard.writeText(pre.innerText).then(done, function () { btn.textContent = '실패'; }); }
+      catch (e) { btn.textContent = '실패'; }
     });
     wrap.appendChild(btn);
   });
@@ -1554,7 +1805,6 @@ curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=
   /* ---------- theme ---------- */
   var root = document.documentElement;
   var THEME_KEY = 'java-one-day-plan:theme';
-  try { var t = localStorage.getItem(THEME_KEY); if (t) root.setAttribute('data-theme', t); } catch (e) {}
   document.getElementById('themeBtn').addEventListener('click', function () {
     var cur = root.getAttribute('data-theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -1564,16 +1814,15 @@ curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=
   });
 
   /* ---------- table of contents ---------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section[id]'));
+  var topics = Array.prototype.slice.call(document.querySelectorAll('main .topic[id]'));
   var tocTargets = [];
-  document.querySelectorAll('main > section[id]').forEach(function (sec) {
-    var h2 = sec.querySelector('h2');
-    tocTargets.push({ el: sec, id: sec.id, text: h2.textContent, lvl: 2, section: sec.id });
-    sec.querySelectorAll('.topic[id], .slot[id]').forEach(function (t) {
-      var h = t.querySelector('h3');
-      if (!h) return;
-      var text = h.cloneNode(true);
-      text.querySelectorAll('.api, .tag').forEach(function (x) { x.remove(); });
-      tocTargets.push({ el: t, id: t.id, text: text.textContent.replace(/\s+/g, ' ').trim(), lvl: 3, section: sec.id });
+  sections.forEach(function (sec) {
+    tocTargets.push({ el: sec, id: sec.id, text: sec.querySelector('h2').textContent, lvl: 2, section: sec.id });
+    sec.querySelectorAll('.topic[id]').forEach(function (t) {
+      var h = t.querySelector('h3').cloneNode(true);
+      h.querySelectorAll('.api, .num').forEach(function (x) { x.remove(); });
+      tocTargets.push({ el: t, id: t.id, text: h.textContent.replace(/\s+/g, ' ').trim(), lvl: 3, section: sec.id });
     });
   });
   var tocLinks = [];
@@ -1590,22 +1839,24 @@ curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('#navLinks a'));
 
   /* ---------- scroll spy ---------- */
-  var current = null;
+  var current;
   function spy() {
-    var y = window.scrollY + 90 + 40;
-    var active = tocTargets[0];
+    var y = window.scrollY + 130;
+    var active = null;
     for (var i = 0; i < tocTargets.length; i++) {
-      if (tocTargets[i].el.getBoundingClientRect().top + window.scrollY <= y) active = tocTargets[i];
+      var el = tocTargets[i].el;
+      if (el.hidden || el.closest('[hidden]')) continue;
+      if (el.getBoundingClientRect().top + window.scrollY <= y) active = tocTargets[i];
     }
-    if (window.scrollY < 200) active = null;
     var id = active ? active.id : null;
     if (id !== current) {
       current = id;
       tocLinks.forEach(function (a) { a.classList.toggle('active', a.dataset.target === id); });
       navLinks.forEach(function (a) { a.classList.toggle('active', !!active && a.getAttribute('href') === '#' + active.section); });
       var act = document.querySelector('#tocDesktop a.active');
-      if (act && act.scrollIntoView) {
-        var sb = document.querySelector('.sidebar'), r = act.getBoundingClientRect(), sr = sb.getBoundingClientRect();
+      var sb = document.querySelector('.sidebar');
+      if (act && sb.offsetParent) {
+        var r = act.getBoundingClientRect(), sr = sb.getBoundingClientRect();
         if (r.top < sr.top || r.bottom > sr.bottom) sb.scrollTop += r.top - sr.top - sr.height / 2;
       }
       var navAct = document.querySelector('#navLinks a.active');
@@ -1637,30 +1888,62 @@ curl localhost:8080/api/members/99     # {"message":"회원이 없습니다. id=
   document.getElementById('drawerClose').addEventListener('click', function () { setDrawer(false); });
   document.getElementById('backdrop').addEventListener('click', function () { setDrawer(false); });
   document.getElementById('tocMobile').addEventListener('click', function (e) { if (e.target.tagName === 'A') setDrawer(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setDrawer(false); });
 
-  /* ---------- checklist progress ---------- */
-  var KEY = 'java-one-day-plan:v1';
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('.timeline .checks input[type=checkbox]'));
-  var labBoxes = Array.prototype.slice.call(document.querySelectorAll('#spring-lab .checks input[type=checkbox]'));
-  var state = {};
-  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
-
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function render() {
-    var done = boxes.filter(function (b) { return b.checked; }).length;
-    document.getElementById('bar').style.width = (boxes.length ? done / boxes.length * 100 : 0) + '%';
-    document.getElementById('plabel').textContent = '하루 플랜 ' + done + ' / ' + boxes.length + ' 완료';
+  /* ---------- search ---------- */
+  var q1 = document.getElementById('q'), q2 = document.getElementById('q2');
+  var noResult = document.getElementById('noResult');
+  var hero = document.querySelector('.hero');
+  topics.forEach(function (t) { t.dataset.text = t.textContent.toLowerCase(); });
+  function filter(raw) {
+    var q = raw.trim().toLowerCase();
+    var words = q ? q.split(/\s+/) : [];
+    var any = false;
+    topics.forEach(function (t) {
+      var hit = words.every(function (w) { return t.dataset.text.indexOf(w) !== -1; });
+      t.hidden = !hit;
+      if (hit) any = true;
+    });
+    sections.forEach(function (sec) {
+      var visible = Array.prototype.some.call(sec.querySelectorAll('.topic'), function (t) { return !t.hidden; });
+      sec.hidden = !!q && !visible;
+      var extra = sec.querySelector('.two');
+      if (extra) extra.hidden = !!q;
+    });
+    tocLinks.forEach(function (a) { a.hidden = document.getElementById(a.dataset.target).hidden; });
+    hero.hidden = !!q;
+    noResult.hidden = !q || any;
+    if (q) window.scrollTo({ top: 0 });
+    spy();
   }
-  boxes.concat(labBoxes).forEach(function (b) {
-    b.checked = !!state[b.id];
-    b.addEventListener('change', function () { state[b.id] = b.checked; save(); render(); });
+  function onInput(e) {
+    var other = e.target === q1 ? q2 : q1;
+    other.value = e.target.value;
+    filter(e.target.value);
+  }
+  q1.addEventListener('input', onInput);
+  q2.addEventListener('input', onInput);
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      e.preventDefault();
+      var target = q1.offsetParent ? q1 : q2;
+      if (target === q2) setDrawer(true);
+      target.focus();
+    } else if (e.key === 'Escape') {
+      if (tag === 'INPUT' && (q1.value || q2.value)) {
+        q1.value = q2.value = ''; filter('');
+      }
+      setDrawer(false);
+    }
   });
-  document.getElementById('reset').addEventListener('click', function () {
-    boxes.concat(labBoxes).forEach(function (b) { b.checked = false; });
-    state = {}; save(); render();
-  });
-  render();
+
+  /* 접힌 예제 안으로 링크해도 열리게 */
+  function openTarget() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    if (el && el.tagName === 'DETAILS') el.open = true;
+  }
+  window.addEventListener('hashchange', openTarget);
+  openTarget();
 })();
 </script>
 </body>
