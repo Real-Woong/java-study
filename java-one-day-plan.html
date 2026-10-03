@@ -1,0 +1,749 @@
+<title>자바 하루 속독 플랜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 왼쪽 시간 레일 + 오른쪽 학습 블록이 이어지는 하루 타임테이블, 상단에 진행률 */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --fg: #16212b;
+  --muted: #5b6875;
+  --line: #dde3e9;
+  --accent: #0b7a68;
+  --accent-soft: #e2f3ef;
+  --spring: #9a5b00;
+  --spring-soft: #fbf0dc;
+  --code-bg: #eef2f5;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171c; --surface: #182128; --fg: #e4eaef; --muted: #93a1ad; --line: #2a353f;
+    --accent: #4cc7ad; --accent-soft: #163a33; --spring: #f0b65a; --spring-soft: #3a2d17; --code-bg: #0d1317;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171c; --surface: #182128; --fg: #e4eaef; --muted: #93a1ad; --line: #2a353f;
+  --accent: #4cc7ad; --accent-soft: #163a33; --spring: #f0b65a; --spring-soft: #3a2d17; --code-bg: #0d1317;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.7;
+  margin: 0;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 80px; display: grid; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.08rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lead { color: var(--muted); max-width: 62ch; }
+section { display: grid; gap: 18px; }
+
+/* header */
+header { display: grid; gap: 14px; }
+.progress { display: grid; gap: 8px; max-width: 520px; }
+.bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.progress-label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* goal / rules */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+.rule b { font-size: 0.98rem; }
+.rule p { color: var(--muted); font-size: 0.92rem; }
+
+/* timeline */
+.timeline { display: grid; gap: 0; }
+.slot { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 20px; }
+.time { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); padding-top: 22px; text-align: right; font-variant-numeric: tabular-nums; line-height: 1.4; }
+.time small { display: block; font-size: 0.72rem; opacity: .8; }
+.block { border-left: 2px solid var(--line); padding: 20px 0 28px 24px; display: grid; gap: 12px; position: relative; min-width: 0; }
+.block::before { content: ""; position: absolute; left: -7px; top: 26px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.block.break::before { border-color: var(--line); }
+.block.break { padding-bottom: 16px; }
+.block.break h3 { color: var(--muted); font-weight: 500; font-size: 0.95rem; }
+.goal { color: var(--muted); font-size: 0.93rem; }
+.tag { display: inline-block; font-size: 0.78rem; font-weight: 500; color: var(--spring); background: var(--spring-soft); padding: 2px 9px; border-radius: 99px; }
+.spring-note { font-size: 0.9rem; background: var(--spring-soft); color: var(--fg); border-radius: 8px; padding: 10px 14px; }
+.spring-note b { color: var(--spring); }
+
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.checks label { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; cursor: pointer; padding: 3px 0; }
+.checks input { margin: 5px 0 0; width: 16px; height: 16px; accent-color: var(--accent); }
+.checks input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.checks input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+
+pre { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; }
+pre .c { color: var(--muted); }
+pre .k { color: var(--accent); font-weight: 600; }
+
+/* map table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+
+/* spring lab */
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.flow .node { flex: 1 1 140px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.flow .node b { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); }
+.flow .node span { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.flow .arrow { align-self: center; color: var(--muted); font-family: var(--font-mono); }
+.file { display: grid; gap: 6px; min-width: 0; }
+.file-name { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.file-name em { font-style: normal; font-family: var(--font-body); font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+.lab-step { display: grid; gap: 14px; }
+.lab-step + .lab-step { border-top: 1px solid var(--line); padding-top: 24px; }
+.lab-step h3 .n { font-family: var(--font-mono); color: var(--accent); margin-right: 8px; }
+
+/* skip list */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.list-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; display: grid; gap: 8px; align-content: start; }
+.list-card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.93rem; }
+.list-card li::marker { color: var(--muted); }
+
+.reset { justify-self: start; font: inherit; font-size: 0.85rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+.reset:hover { color: var(--fg); }
+.reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 560px) {
+  .slot { grid-template-columns: 1fr; gap: 0; }
+  .time { text-align: left; padding-top: 18px; padding-left: 26px; }
+  .time small { display: inline; margin-left: 6px; }
+  .block { padding-top: 6px; }
+  .block::before { top: -14px; }
+  h1 { font-size: 1.6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Java → Spring 준비 · 하루 완주</span>
+  <h1>자바 하루 속독 플랜</h1>
+  <p class="lead">목표는 자바를 "다 아는 것"이 아니라, 내일 밤에 Spring 코드를 열었을 때 <b>클래스·인터페이스·어노테이션·컬렉션</b>이 읽히는 상태가 되는 것입니다. 하루 약 11시간, 8개 블록으로 나눴고 체크한 항목은 이 브라우저에 저장됩니다.</p>
+  <div class="progress">
+    <div class="bar"><span id="bar"></span></div>
+    <span class="progress-label" id="plabel">0 / 0 완료</span>
+  </div>
+</header>
+
+<section>
+  <h2>공부 방법 4가지 원칙</h2>
+  <div class="rules">
+    <div class="rule"><b>읽지 말고 친다</b><p>예제는 복붙하지 말고 IntelliJ에 직접 타이핑합니다. 손이 기억해야 Spring 코드에서 패턴이 보입니다.</p></div>
+    <div class="rule"><b>블록당 25분 + 5분</b><p>개념 읽기 25분, 직접 작성 5분 이상. 막히면 10분 안에 답을 찾고 넘어갑니다. 완벽주의는 내일의 적입니다.</p></div>
+    <div class="rule"><b>OOP에 시간을 몰아준다</b><p>문법은 빨리, 클래스·인터페이스·다형성은 천천히. Spring의 DI는 전부 인터페이스와 다형성 위에 서 있습니다.</p></div>
+    <div class="rule"><b>한 줄 요약 노트</b><p>블록이 끝날 때마다 "오늘 배운 것을 한 문장으로" 적습니다. 밤 복습 시간에 이 노트만 다시 봅니다.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>하루 타임테이블</h2>
+  <div class="timeline">
+
+    <div class="slot">
+      <div class="time">09:00<small>30분</small></div>
+      <div class="block">
+        <h3>0. 환경 세팅</h3>
+        <p class="goal">코드를 실행할 수 있는 상태 만들기. 여기서 시간 끌지 않습니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-0-1"><span>JDK 21 설치 (<code>java -version</code>으로 확인)</span></label></li>
+          <li><label><input type="checkbox" id="c-0-2"><span>IntelliJ IDEA Community 설치 후 새 Java 프로젝트 생성</span></label></li>
+          <li><label><input type="checkbox" id="c-0-3"><span><code>main</code> 메서드로 Hello World 실행</span></label></li>
+        </ul>
+<pre><span class="k">public class</span> Main {
+    <span class="k">public static void</span> main(String[] args) {
+        System.out.println(<span class="c">"Hello, Java"</span>);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">09:30<small>90분</small></div>
+      <div class="block">
+        <h3>1. 기본 문법</h3>
+        <p class="goal">다른 언어와 거의 같은 부분입니다. 빠르게 훑고 자바만의 차이점에 집중합니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-1-1"><span>기본 타입 <code>int long double boolean char</code>와 참조 타입 <code>String</code>의 차이</span></label></li>
+          <li><label><input type="checkbox" id="c-1-2"><span><code>var</code> 타입 추론, 형변환 <code>(int) 3.7</code></span></label></li>
+          <li><label><input type="checkbox" id="c-1-3"><span><code>if / switch</code>(화살표 문법 포함), <code>for / 향상된 for / while</code></span></label></li>
+          <li><label><input type="checkbox" id="c-1-4"><span>배열 <code>int[] arr = new int[5]</code></span></label></li>
+          <li><label><input type="checkbox" id="c-1-5"><span>문자열 비교는 <code>==</code>가 아니라 <code>equals()</code> (가장 흔한 실수)</span></label></li>
+        </ul>
+<pre>String a = <span class="k">new</span> String(<span class="c">"hi"</span>);
+String b = <span class="c">"hi"</span>;
+System.out.println(a == b);        <span class="c">// false : 주소 비교</span>
+System.out.println(a.equals(b));   <span class="c">// true  : 값 비교</span>
+
+<span class="k">for</span> (String name : List.of(<span class="c">"kim"</span>, <span class="c">"lee"</span>)) {
+    System.out.println(name);
+}</pre>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">11:00<small>90분</small></div>
+      <div class="block">
+        <h3>2. 클래스와 객체</h3>
+        <p class="goal">자바의 모든 코드는 클래스 안에 있습니다. 객체를 만들고 쓰는 흐름을 손에 익힙니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-2-1"><span>클래스 = 설계도, 객체 = <code>new</code>로 만든 실체</span></label></li>
+          <li><label><input type="checkbox" id="c-2-2"><span>필드, 메서드, 생성자, <code>this</code></span></label></li>
+          <li><label><input type="checkbox" id="c-2-3"><span>접근제어자 <code>private / public / protected / default</code></span></label></li>
+          <li><label><input type="checkbox" id="c-2-4"><span><code>static</code>: 객체가 아니라 클래스에 붙는 것</span></label></li>
+          <li><label><input type="checkbox" id="c-2-5"><span>패키지와 <code>import</code>, 캡슐화(getter / setter)</span></label></li>
+        </ul>
+<pre><span class="k">public class</span> Member {
+    <span class="k">private</span> Long id;
+    <span class="k">private</span> String name;
+
+    <span class="k">public</span> Member(String name) { <span class="k">this</span>.name = name; }
+
+    <span class="k">public</span> String getName() { <span class="k">return</span> name; }
+    <span class="k">public void</span> setId(Long id) { <span class="k">this</span>.id = id; }
+}</pre>
+        <p class="spring-note"><b>Spring 연결</b> · 이 Member 같은 클래스가 그대로 Entity와 DTO가 됩니다.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">12:30<small>60분</small></div>
+      <div class="block break"><h3>점심 · 오전 한 줄 요약 2개 적기</h3></div>
+    </div>
+
+    <div class="slot">
+      <div class="time">13:30<small>120분</small></div>
+      <div class="block">
+        <h3>3. 객체지향 핵심 <span class="tag">가장 중요</span></h3>
+        <p class="goal">오늘 하루 중 가장 많은 시간을 씁니다. "인터페이스 타입으로 받고 구현체를 바꿔 끼운다"를 이해하면 Spring의 절반을 이해한 겁니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-3-1"><span>상속 <code>extends</code>, 메서드 오버라이딩 <code>@Override</code></span></label></li>
+          <li><label><input type="checkbox" id="c-3-2"><span>추상 클래스 <code>abstract</code></span></label></li>
+          <li><label><input type="checkbox" id="c-3-3"><span>인터페이스 <code>interface / implements</code></span></label></li>
+          <li><label><input type="checkbox" id="c-3-4"><span>다형성: 부모(인터페이스) 타입 변수에 자식 객체 담기</span></label></li>
+          <li><label><input type="checkbox" id="c-3-5"><span>오버로딩과 오버라이딩의 차이 설명해보기</span></label></li>
+        </ul>
+<pre><span class="k">public interface</span> DiscountPolicy {
+    <span class="k">int</span> discount(<span class="k">int</span> price);
+}
+
+<span class="k">public class</span> FixDiscountPolicy <span class="k">implements</span> DiscountPolicy {
+    <span class="k">@Override</span>
+    <span class="k">public int</span> discount(<span class="k">int</span> price) { <span class="k">return</span> 1000; }
+}
+
+<span class="k">public class</span> RateDiscountPolicy <span class="k">implements</span> DiscountPolicy {
+    <span class="k">@Override</span>
+    <span class="k">public int</span> discount(<span class="k">int</span> price) { <span class="k">return</span> price / 10; }
+}
+
+DiscountPolicy policy = <span class="k">new</span> RateDiscountPolicy();  <span class="c">// 구현체만 바꿔 끼움</span></pre>
+        <p class="spring-note"><b>Spring 연결</b> · Spring은 이 <code>new RateDiscountPolicy()</code>를 대신 해주는 프레임워크입니다. 그게 DI(의존성 주입)입니다.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">15:30<small>90분</small></div>
+      <div class="block">
+        <h3>4. 컬렉션과 제네릭</h3>
+        <p class="goal">실무 코드의 데이터는 거의 전부 List와 Map에 담깁니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-4-1"><span><code>List / ArrayList</code>: 추가, 조회, 순회</span></label></li>
+          <li><label><input type="checkbox" id="c-4-2"><span><code>Map / HashMap</code>: put, get, containsKey</span></label></li>
+          <li><label><input type="checkbox" id="c-4-3"><span><code>Set / HashSet</code>: 중복 제거</span></label></li>
+          <li><label><input type="checkbox" id="c-4-4"><span>제네릭 <code>&lt;T&gt;</code>, 래퍼 클래스 <code>Integer / Long</code></span></label></li>
+          <li><label><input type="checkbox" id="c-4-5"><span><code>Optional</code>: null 대신 "없을 수도 있음"을 표현</span></label></li>
+        </ul>
+<pre>Map&lt;Long, Member&gt; store = <span class="k">new</span> HashMap&lt;&gt;();
+store.put(1L, <span class="k">new</span> Member(<span class="c">"kim"</span>));
+
+Optional&lt;Member&gt; found = Optional.ofNullable(store.get(2L));
+String name = found.map(Member::getName).orElse(<span class="c">"없음"</span>);</pre>
+        <p class="spring-note"><b>Spring 연결</b> · Spring Data JPA의 <code>findById()</code>는 <code>Optional</code>을 돌려줍니다.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">17:00<small>75분</small></div>
+      <div class="block">
+        <h3>5. 예외 처리 · 람다 · Stream</h3>
+        <p class="goal">Spring 코드에서 자주 보이는 짧은 문법을 읽을 수 있게 만듭니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-5-1"><span><code>try / catch / finally</code>, <code>throw new IllegalStateException(...)</code></span></label></li>
+          <li><label><input type="checkbox" id="c-5-2"><span>Checked와 Unchecked(RuntimeException) 예외 차이</span></label></li>
+          <li><label><input type="checkbox" id="c-5-3"><span>람다 <code>x -&gt; x * 2</code>, 메서드 참조 <code>Member::getName</code></span></label></li>
+          <li><label><input type="checkbox" id="c-5-4"><span>Stream <code>filter / map / collect(toList())</code></span></label></li>
+        </ul>
+<pre>List&lt;String&gt; names = members.stream()
+        .filter(m -&gt; m.getName().startsWith(<span class="c">"k"</span>))
+        .map(Member::getName)
+        .toList();
+
+<span class="k">if</span> (exists) {
+    <span class="k">throw new</span> IllegalStateException(<span class="c">"이미 존재하는 회원입니다."</span>);
+}</pre>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">18:15<small>45분</small></div>
+      <div class="block break"><h3>저녁 · 오후 한 줄 요약 3개 적기</h3></div>
+    </div>
+
+    <div class="slot">
+      <div class="time">19:00<small>75분</small></div>
+      <div class="block">
+        <h3>6. Spring 직전 개념</h3>
+        <p class="goal">Spring 문서를 열면 바로 마주치는 것들입니다. 깊이보다 "이게 뭔지 안다" 수준이 목표입니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-6-1"><span>어노테이션 <code>@</code>: 코드에 붙이는 메타 정보 (Spring은 이걸 읽고 동작함)</span></label></li>
+          <li><label><input type="checkbox" id="c-6-2"><span>IoC / DI 개념: 객체 생성을 내가 아니라 외부가 담당</span></label></li>
+          <li><label><input type="checkbox" id="c-6-3"><span>생성자 주입 패턴 + <code>final</code> 필드</span></label></li>
+          <li><label><input type="checkbox" id="c-6-4"><span><code>record</code>, Lombok(<code>@Getter</code>, <code>@RequiredArgsConstructor</code>)이 무엇을 줄여주는지</span></label></li>
+          <li><label><input type="checkbox" id="c-6-5"><span>Gradle: <code>build.gradle</code>에 라이브러리를 적으면 받아오는 빌드 도구</span></label></li>
+        </ul>
+<pre><span class="k">public class</span> MemberService {
+    <span class="k">private final</span> MemberRepository repository;
+
+    <span class="c">// 무엇을 쓸지는 밖에서 넣어준다 = 생성자 주입</span>
+    <span class="k">public</span> MemberService(MemberRepository repository) {
+        <span class="k">this</span>.repository = repository;
+    }
+}</pre>
+        <p class="spring-note"><b>Spring 연결</b> · 여기에 <code>@Service</code>만 붙이면 Spring이 생성자에 알맞은 객체를 자동으로 넣어줍니다.</p>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">20:15<small>90분</small></div>
+      <div class="block">
+        <h3>7. 미니 프로젝트: 순수 자바 회원 관리</h3>
+        <p class="goal">Spring 없이 Spring 구조를 직접 만들어 봅니다. 이걸 완성하면 Spring 입문 강의 첫 주가 복습처럼 느껴집니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-7-1"><span><code>Member</code> 클래스 (id, name)</span></label></li>
+          <li><label><input type="checkbox" id="c-7-2"><span><code>MemberRepository</code> 인터페이스: save, findById, findAll</span></label></li>
+          <li><label><input type="checkbox" id="c-7-3"><span><code>MemoryMemberRepository</code>: HashMap으로 구현</span></label></li>
+          <li><label><input type="checkbox" id="c-7-4"><span><code>MemberService</code>: 중복 이름 가입 시 예외 발생</span></label></li>
+          <li><label><input type="checkbox" id="c-7-5"><span><code>main</code>에서 직접 조립(수동 DI)하고 실행</span></label></li>
+        </ul>
+<pre>member/
+├── Member.java
+├── MemberRepository.java        <span class="c">// interface</span>
+├── MemoryMemberRepository.java  <span class="c">// HashMap 구현체</span>
+├── MemberService.java           <span class="c">// 생성자 주입</span>
+└── Main.java                    <span class="c">// new 로 직접 조립</span>
+
+<span class="c">// Main.java</span>
+MemberRepository repo = <span class="k">new</span> MemoryMemberRepository();
+MemberService service = <span class="k">new</span> MemberService(repo);
+service.join(<span class="k">new</span> Member(<span class="c">"kim"</span>));</pre>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="time">21:45<small>30분</small></div>
+      <div class="block">
+        <h3>8. 복습과 셀프 테스트</h3>
+        <p class="goal">한 줄 요약 노트를 다시 읽고, 아래 질문에 소리 내서 답해 봅니다. 막히는 질문이 내일 다시 볼 부분입니다. 시간이 남으면 아래 <a href="#spring-lab">Spring 첫 실습</a>으로 넘어갑니다.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" id="c-8-1"><span><code>==</code>와 <code>equals()</code>는 언제 결과가 다른가?</span></label></li>
+          <li><label><input type="checkbox" id="c-8-2"><span>인터페이스를 쓰면 무엇이 좋은가? 예시로 설명</span></label></li>
+          <li><label><input type="checkbox" id="c-8-3"><span><code>static</code> 메서드와 일반 메서드의 차이</span></label></li>
+          <li><label><input type="checkbox" id="c-8-4"><span>왜 필드에 <code>private final</code>을 붙이고 생성자로 받는가?</span></label></li>
+          <li><label><input type="checkbox" id="c-8-5"><span>DI를 Spring 없이 한 문장으로 설명</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <button class="reset" id="reset" type="button">체크 모두 해제</button>
+</section>
+
+<section id="spring-lab">
+  <span class="eyebrow">보너스 · 미니 프로젝트 다음 단계</span>
+  <h2>Spring 첫 실습: Controller · Service · Repository</h2>
+  <p class="lead">블록 7에서 순수 자바로 만든 회원 관리를 Spring Boot로 옮깁니다. DB 없이 메모리(HashMap)에 저장하므로 설치할 것이 없고, 프로젝트 생성부터 API 호출까지 약 60분 걸립니다.</p>
+
+  <div class="lab-step">
+    <h3>요청이 지나가는 길</h3>
+    <div class="flow">
+      <div class="node"><b>Client</b><span>브라우저, curl, Postman</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Controller</b><span>URL을 받고 요청/응답 형식(DTO)을 다룸</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Service</b><span>비즈니스 규칙. "이름 중복 금지" 같은 판단</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Repository</b><span>저장과 조회만 담당</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>저장소</b><span>지금은 HashMap, 나중에 DB</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>계층</th><th>하는 일</th><th>하면 안 되는 일</th></tr></thead>
+        <tbody>
+          <tr><td>Controller</td><td>HTTP 요청 받기, DTO 변환, Service 호출</td><td>중복 검사 같은 비즈니스 판단, 저장소 직접 접근</td></tr>
+          <tr><td>Service</td><td>규칙 검증, 여러 Repository 조합</td><td>HTTP나 JSON 형식 신경 쓰기</td></tr>
+          <tr><td>Repository</td><td>save, findById, findAll</td><td>"이미 있으면 예외" 같은 판단</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <h3><span class="n">1</span>프로젝트 만들기</h3>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="s-1-1"><span><a href="https://start.spring.io" target="_blank" rel="noopener">start.spring.io</a> 접속: Gradle - Groovy, Java, 기본 선택된 Spring Boot 버전, Java 21</span></label></li>
+      <li><label><input type="checkbox" id="s-1-2"><span>Group <code>com.example</code>, Artifact <code>hello</code></span></label></li>
+      <li><label><input type="checkbox" id="s-1-3"><span>Dependencies에 <b>Spring Web</b> 하나만 추가 → Generate → 압축 풀고 IntelliJ로 열기</span></label></li>
+      <li><label><input type="checkbox" id="s-1-4"><span><code>HelloApplication</code> 실행 후 로그에 <code>Tomcat started on port 8080</code> 확인</span></label></li>
+    </ul>
+  </div>
+
+  <div class="lab-step">
+    <h3><span class="n">2</span>파일 구조</h3>
+    <p class="goal">모든 패키지는 반드시 <code>HelloApplication</code>이 있는 <code>com.example.hello</code> <b>아래</b>에 둡니다. 밖에 두면 Spring이 찾지 못해서 주입이 실패합니다.</p>
+<pre>hello/
+├── build.gradle
+└── src/main/
+    ├── java/com/example/hello/
+    │   ├── HelloApplication.java          <span class="c">// 시작점 (자동 생성됨)</span>
+    │   ├── controller/
+    │   │   └── MemberController.java      <span class="c">// @RestController</span>
+    │   ├── service/
+    │   │   └── MemberService.java         <span class="c">// @Service</span>
+    │   ├── repository/
+    │   │   ├── MemberRepository.java      <span class="c">// interface</span>
+    │   │   └── MemoryMemberRepository.java <span class="c">// @Repository 구현체</span>
+    │   ├── domain/
+    │   │   └── Member.java                <span class="c">// 핵심 데이터</span>
+    │   ├── dto/
+    │   │   ├── MemberCreateRequest.java   <span class="c">// 요청 JSON 모양</span>
+    │   │   └── MemberResponse.java        <span class="c">// 응답 JSON 모양</span>
+    │   └── exception/
+    │       └── GlobalExceptionHandler.java <span class="c">// 에러를 JSON으로</span>
+    └── resources/
+        └── application.properties</pre>
+  </div>
+
+  <div class="lab-step">
+    <h3><span class="n">3</span>아래에서 위로 코드 작성</h3>
+    <p class="goal">Domain → Repository → Service → DTO → Controller 순서로 만듭니다. 아래 계층이 있어야 위 계층이 컴파일됩니다.</p>
+
+    <div class="file">
+      <div class="file-name">domain/Member.java <em>블록 2의 Member와 같음</em></div>
+<pre><span class="k">package</span> com.example.hello.domain;
+
+<span class="k">public class</span> Member {
+    <span class="k">private</span> Long id;
+    <span class="k">private final</span> String name;
+
+    <span class="k">public</span> Member(String name) { <span class="k">this</span>.name = name; }
+
+    <span class="k">public</span> Long getId() { <span class="k">return</span> id; }
+    <span class="k">public</span> String getName() { <span class="k">return</span> name; }
+    <span class="k">public void</span> setId(Long id) { <span class="k">this</span>.id = id; }
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">repository/MemberRepository.java <em>무엇을 할지만 정한 인터페이스</em></div>
+<pre><span class="k">package</span> com.example.hello.repository;
+
+<span class="k">import</span> com.example.hello.domain.Member;
+<span class="k">import</span> java.util.List;
+<span class="k">import</span> java.util.Optional;
+
+<span class="k">public interface</span> MemberRepository {
+    Member save(Member member);
+    Optional&lt;Member&gt; findById(Long id);
+    Optional&lt;Member&gt; findByName(String name);
+    List&lt;Member&gt; findAll();
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">repository/MemoryMemberRepository.java <em>HashMap으로 구현</em></div>
+<pre><span class="k">package</span> com.example.hello.repository;
+
+<span class="k">import</span> com.example.hello.domain.Member;
+<span class="k">import</span> org.springframework.stereotype.Repository;
+<span class="k">import</span> java.util.*;
+<span class="k">import</span> java.util.concurrent.ConcurrentHashMap;
+<span class="k">import</span> java.util.concurrent.atomic.AtomicLong;
+
+<span class="k">@Repository</span>   <span class="c">// Spring이 이 객체를 만들어 관리(빈 등록)</span>
+<span class="k">public class</span> MemoryMemberRepository <span class="k">implements</span> MemberRepository {
+
+    <span class="k">private final</span> Map&lt;Long, Member&gt; store = <span class="k">new</span> ConcurrentHashMap&lt;&gt;();
+    <span class="k">private final</span> AtomicLong sequence = <span class="k">new</span> AtomicLong();
+
+    <span class="k">@Override</span>
+    <span class="k">public</span> Member save(Member member) {
+        member.setId(sequence.incrementAndGet());
+        store.put(member.getId(), member);
+        <span class="k">return</span> member;
+    }
+
+    <span class="k">@Override</span>
+    <span class="k">public</span> Optional&lt;Member&gt; findById(Long id) {
+        <span class="k">return</span> Optional.ofNullable(store.get(id));
+    }
+
+    <span class="k">@Override</span>
+    <span class="k">public</span> Optional&lt;Member&gt; findByName(String name) {
+        <span class="k">return</span> store.values().stream()
+                .filter(m -&gt; m.getName().equals(name))
+                .findFirst();
+    }
+
+    <span class="k">@Override</span>
+    <span class="k">public</span> List&lt;Member&gt; findAll() {
+        <span class="k">return new</span> ArrayList&lt;&gt;(store.values());
+    }
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">service/MemberService.java <em>규칙은 여기에만</em></div>
+<pre><span class="k">package</span> com.example.hello.service;
+
+<span class="k">import</span> com.example.hello.domain.Member;
+<span class="k">import</span> com.example.hello.repository.MemberRepository;
+<span class="k">import</span> org.springframework.stereotype.Service;
+<span class="k">import</span> java.util.List;
+
+<span class="k">@Service</span>
+<span class="k">public class</span> MemberService {
+
+    <span class="k">private final</span> MemberRepository memberRepository;
+
+    <span class="c">// 생성자가 하나면 Spring이 알아서 MemoryMemberRepository를 넣어줌 (DI)</span>
+    <span class="k">public</span> MemberService(MemberRepository memberRepository) {
+        <span class="k">this</span>.memberRepository = memberRepository;
+    }
+
+    <span class="k">public</span> Long join(String name) {
+        memberRepository.findByName(name).ifPresent(m -&gt; {
+            <span class="k">throw new</span> IllegalStateException(<span class="c">"이미 존재하는 회원입니다."</span>);
+        });
+        <span class="k">return</span> memberRepository.save(<span class="k">new</span> Member(name)).getId();
+    }
+
+    <span class="k">public</span> Member findOne(Long id) {
+        <span class="k">return</span> memberRepository.findById(id)
+                .orElseThrow(() -&gt; <span class="k">new</span> IllegalArgumentException(<span class="c">"회원이 없습니다. id="</span> + id));
+    }
+
+    <span class="k">public</span> List&lt;Member&gt; findAll() {
+        <span class="k">return</span> memberRepository.findAll();
+    }
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">dto/MemberCreateRequest.java · dto/MemberResponse.java <em>JSON 모양을 정하는 record</em></div>
+<pre><span class="k">package</span> com.example.hello.dto;
+
+<span class="c">// 요청 바디 {"name": "kim"} 이 이 객체로 바뀜</span>
+<span class="k">public record</span> MemberCreateRequest(String name) {}</pre>
+<pre><span class="k">package</span> com.example.hello.dto;
+
+<span class="k">import</span> com.example.hello.domain.Member;
+
+<span class="c">// 이 객체가 {"id": 1, "name": "kim"} 으로 바뀌어 응답됨</span>
+<span class="k">public record</span> MemberResponse(Long id, String name) {
+    <span class="k">public static</span> MemberResponse from(Member member) {
+        <span class="k">return new</span> MemberResponse(member.getId(), member.getName());
+    }
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">controller/MemberController.java <em>URL과 Service를 연결</em></div>
+<pre><span class="k">package</span> com.example.hello.controller;
+
+<span class="k">import</span> com.example.hello.dto.MemberCreateRequest;
+<span class="k">import</span> com.example.hello.dto.MemberResponse;
+<span class="k">import</span> com.example.hello.service.MemberService;
+<span class="k">import</span> org.springframework.web.bind.annotation.*;
+<span class="k">import</span> java.util.List;
+
+<span class="k">@RestController</span>                  <span class="c">// 반환값을 JSON으로 응답</span>
+<span class="k">@RequestMapping</span>(<span class="c">"/api/members"</span>)   <span class="c">// 이 클래스의 공통 URL</span>
+<span class="k">public class</span> MemberController {
+
+    <span class="k">private final</span> MemberService memberService;
+
+    <span class="k">public</span> MemberController(MemberService memberService) {
+        <span class="k">this</span>.memberService = memberService;
+    }
+
+    <span class="k">@PostMapping</span>                     <span class="c">// POST /api/members</span>
+    <span class="k">public</span> MemberResponse create(<span class="k">@RequestBody</span> MemberCreateRequest request) {
+        Long id = memberService.join(request.name());
+        <span class="k">return</span> MemberResponse.from(memberService.findOne(id));
+    }
+
+    <span class="k">@GetMapping</span>                      <span class="c">// GET /api/members</span>
+    <span class="k">public</span> List&lt;MemberResponse&gt; list() {
+        <span class="k">return</span> memberService.findAll().stream()
+                .map(MemberResponse::from)
+                .toList();
+    }
+
+    <span class="k">@GetMapping</span>(<span class="c">"/{id}"</span>)            <span class="c">// GET /api/members/1</span>
+    <span class="k">public</span> MemberResponse get(<span class="k">@PathVariable</span> Long id) {
+        <span class="k">return</span> MemberResponse.from(memberService.findOne(id));
+    }
+}</pre>
+    </div>
+
+    <div class="file">
+      <div class="file-name">exception/GlobalExceptionHandler.java <em>예외를 500 대신 400 + 메시지로</em></div>
+<pre><span class="k">package</span> com.example.hello.exception;
+
+<span class="k">import</span> org.springframework.http.HttpStatus;
+<span class="k">import</span> org.springframework.web.bind.annotation.*;
+<span class="k">import</span> java.util.Map;
+
+<span class="k">@RestControllerAdvice</span>
+<span class="k">public class</span> GlobalExceptionHandler {
+
+    <span class="k">@ResponseStatus</span>(HttpStatus.BAD_REQUEST)
+    <span class="k">@ExceptionHandler</span>({IllegalStateException.<span class="k">class</span>, IllegalArgumentException.<span class="k">class</span>})
+    <span class="k">public</span> Map&lt;String, String&gt; handle(RuntimeException e) {
+        <span class="k">return</span> Map.of(<span class="c">"message"</span>, e.getMessage());
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <h3><span class="n">4</span>실행하고 호출해 보기</h3>
+    <p class="goal">앱을 실행한 상태에서 터미널에 입력합니다. 오른쪽 주석이 기대 결과입니다.</p>
+<pre><span class="c"># 회원 가입</span>
+curl -X POST localhost:8080/api/members \
+     -H "Content-Type: application/json" \
+     -d '{"name":"kim"}'
+<span class="c"># {"id":1,"name":"kim"}</span>
+
+<span class="c"># 같은 이름으로 한 번 더 → 400</span>
+curl -X POST localhost:8080/api/members \
+     -H "Content-Type: application/json" \
+     -d '{"name":"kim"}'
+<span class="c"># {"message":"이미 존재하는 회원입니다."}</span>
+
+<span class="c"># 전체 조회 / 단건 조회</span>
+curl localhost:8080/api/members        <span class="c"># [{"id":1,"name":"kim"}]</span>
+curl localhost:8080/api/members/1      <span class="c"># {"id":1,"name":"kim"}</span>
+curl localhost:8080/api/members/99     <span class="c"># {"message":"회원이 없습니다. id=99"}</span></pre>
+    <ul class="checks">
+      <li><label><input type="checkbox" id="s-4-1"><span>가입, 중복 가입, 전체 조회, 단건 조회, 없는 id 조회 5개 모두 기대 결과와 일치</span></label></li>
+      <li><label><input type="checkbox" id="s-4-2"><span>앱을 재시작하면 데이터가 사라지는 이유 설명하기 (메모리 저장이라서)</span></label></li>
+      <li><label><input type="checkbox" id="s-4-3"><span><code>MemberService</code> 어디에도 <code>new MemoryMemberRepository()</code>가 없는데 동작하는 이유 설명하기</span></label></li>
+    </ul>
+  </div>
+
+  <div class="lab-step">
+    <h3><span class="n">5</span>자주 막히는 곳</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>증상</th><th>원인과 해결</th></tr></thead>
+        <tbody>
+          <tr><td>Port 8080 was already in use</td><td>이미 실행 중인 앱이 있음. IntelliJ에서 이전 실행을 중지</td></tr>
+          <tr><td>required a bean of type ... that could not be found</td><td>클래스에 <code>@Repository / @Service</code>를 빠뜨렸거나 패키지가 <code>com.example.hello</code> 밖에 있음</td></tr>
+          <tr><td>415 Unsupported Media Type</td><td>curl에 <code>-H "Content-Type: application/json"</code>이 빠짐</td></tr>
+          <tr><td>404 Not Found</td><td>URL 오타. <code>/api/members</code>인지, POST/GET을 맞게 썼는지 확인</td></tr>
+          <tr><td>응답 JSON이 <code>{}</code>로 비어 있음</td><td>DTO에 getter가 없음. record를 쓰면 해결</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="spring-note"><b>다음 단계</b> · 나중에 DB를 붙일 때는 <code>MemberRepository</code>를 JPA 구현으로 바꾸기만 하면 되고, Service와 Controller는 한 줄도 안 바뀝니다. 블록 3에서 배운 인터페이스와 다형성이 바로 이 지점입니다.</p>
+  </div>
+</section>
+
+<section>
+  <h2>자바 개념이 Spring에서 쓰이는 곳</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>자바 개념</th><th>Spring에서 보이는 모습</th></tr></thead>
+      <tbody>
+        <tr><td>클래스 · 캡슐화</td><td>Entity, DTO, Controller, Service가 모두 평범한 클래스</td></tr>
+        <tr><td>인터페이스 · 다형성</td><td>Repository 인터페이스, 구현체 교체, DI의 기반</td></tr>
+        <tr><td>생성자 · final</td><td>생성자 주입, <code>@RequiredArgsConstructor</code></td></tr>
+        <tr><td>어노테이션</td><td><code>@Controller @Service @Repository @Autowired @GetMapping</code></td></tr>
+        <tr><td>컬렉션 · 제네릭</td><td><code>List&lt;MemberDto&gt;</code> 응답, <code>JpaRepository&lt;Member, Long&gt;</code></td></tr>
+        <tr><td>Optional</td><td><code>repository.findById(id).orElseThrow()</code></td></tr>
+        <tr><td>예외</td><td><code>@ExceptionHandler</code>, 커스텀 예외로 에러 응답 만들기</td></tr>
+        <tr><td>람다 · Stream</td><td>Entity 목록을 DTO 목록으로 변환할 때</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div class="list-card">
+      <h3>내일은 건너뛰어도 되는 것</h3>
+      <ul>
+        <li>스레드, 동시성 (Spring 초반엔 거의 안 씀)</li>
+        <li>파일 입출력 IO 스트림 상세</li>
+        <li>내부 클래스, 익명 클래스 세부 규칙</li>
+        <li>리플렉션, 비트 연산</li>
+        <li>Swing 같은 GUI</li>
+      </ul>
+    </div>
+    <div class="list-card">
+      <h3>참고 자료</h3>
+      <ul>
+        <li><a href="https://wikidocs.net/book/31" target="_blank" rel="noopener">점프 투 자바</a> · 한국어 무료, 블록 1~5 교재로 사용</li>
+        <li><a href="https://dev.java/learn/" target="_blank" rel="noopener">dev.java Learn</a> · Oracle 공식 튜토리얼</li>
+        <li><a href="https://spring.io/guides" target="_blank" rel="noopener">Spring Guides</a> · 모레부터 시작할 다음 단계</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var KEY = 'java-one-day-plan:v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.timeline .checks input[type=checkbox]'));
+  var labBoxes = Array.prototype.slice.call(document.querySelectorAll('#spring-lab .checks input[type=checkbox]'));
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function render() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById('bar').style.width = (boxes.length ? done / boxes.length * 100 : 0) + '%';
+    document.getElementById('plabel').textContent = done + ' / ' + boxes.length + ' 완료';
+  }
+
+  boxes.concat(labBoxes).forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener('change', function () { state[b.id] = b.checked; save(); render(); });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.concat(labBoxes).forEach(function (b) { b.checked = false; });
+    state = {}; save(); render();
+  });
+  render();
+})();
+</script>
